@@ -1,0 +1,723 @@
+<%- include("../components/adminHeader", { title: title }) %>
+
+    <%- include("../components/adminSidebar") %>
+
+        <main class="app-main">
+            <!--begin::App Content Header-->
+            <div class="app-content-header">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3 class="mb-0">Ai Models</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end gap-2 mb-0">
+                                <!-- <button class="btn btn-primary">Button 1</button> -->
+                                <!-- 1. Date Range Selector -->
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-primary dropdown-toggle"
+                                        data-bs-toggle="dropdown">
+                                        Date Range: <span class="fw-semibold">7d</span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Today</a></li>
+                                        <li><a class="dropdown-item active" href="#">Last 7 Days</a></li>
+                                        <li><a class="dropdown-item" href="#">Last 30 Days</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item" href="#">Custom Range…</a></li>
+                                    </ul>
+                                </div>
+
+                                <!-- 2. Segment Filter -->
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-primary dropdown-toggle"
+                                        data-bs-toggle="dropdown">
+                                        Segment: <span class="fw-semibold">All Users</span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item active" href="#">All Users</a></li>
+                                        <li><a class="dropdown-item" href="#">New Users</a></li>
+                                        <li><a class="dropdown-item" href="#">Returning Users</a></li>
+                                        <li><a class="dropdown-item" href="#">Paid Users</a></li>
+                                        <li><a class="dropdown-item" href="#">Trial Users</a></li>
+                                    </ul>
+                                </div>
+
+                                <!-- 3. Export / Share -->
+                                <div class="dropdown ms-auto">
+                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle"
+                                        data-bs-toggle="dropdown">
+                                        Export
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-csv me-2"></i>
+                                                Export as CSV</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-pdf me-2"></i>
+                                                Export as PDF</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item" href="#"><i class="bi bi-share me-2"></i> Copy
+                                                Dashboard Link</a></li>
+                                    </ul>
+                                </div>
+                            </ol>
+                        </div>
+                    </div>
+                    <!--end::Row-->
+                </div>
+                <!--end::Container-->
+            </div>
+            <!--end::App Content Header-->
+            <!--begin::App Content-->
+            <div class="app-content">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row g-3 mb-4">
+                        <!-- Request Rate -->
+                        <div class="col-lg-3 col-6">
+                            <div class="card text-white position-relative"
+                                style="background-color:#007bff; border:none; border-radius:10px; overflow:hidden;">
+                                <div class="card-body">
+                                    <h3 class="fw-bold mb-1" id="requestRate">120/s</h3>
+                                    <p class="mb-0">Request Rate</p>
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                        style="font-size:3rem; opacity:0.3;">
+                                        <i class="bi bi-arrow-repeat"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Avg Latency -->
+                        <div class="col-lg-3 col-6">
+                            <div class="card text-white position-relative"
+                                style="background-color:#28a745; border:none; border-radius:10px; overflow:hidden;">
+                                <div class="card-body">
+                                    <h3 class="fw-bold mb-1" id="avgLatency">85ms</h3>
+                                    <p class="mb-0">Avg Latency</p>
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                        style="font-size:3rem; opacity:0.3;">
+                                        <i class="bi bi-clock-fill"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Error % -->
+                        <div class="col-lg-3 col-6">
+                            <div class="card text-white position-relative"
+                                style="background-color:#ffc107; border:none; border-radius:10px; overflow:hidden;">
+                                <div class="card-body">
+                                    <h3 class="fw-bold mb-1 text-dark" id="errorRate">0.7%</h3>
+                                    <p class="mb-0">Error %</p>
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                        style="font-size:3rem; opacity:0.3;">
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Uptime -->
+                        <div class="col-lg-3 col-6">
+                            <div class="card text-white position-relative"
+                                style="background-color:#dc3545; border:none; border-radius:10px; overflow:hidden;">
+                                <div class="card-body">
+                                    <h3 class="fw-bold mb-1" id="uptime">99.98%</h3>
+                                    <p class="mb-0">Uptime</p>
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                        style="font-size:3rem; opacity:0.3;">
+                                        <i class="bi bi-shield-check"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="row g-4 mb-4">
+                        <div class="col-lg-6 d-flex">
+                            <div class="card dashboard-card flex-fill">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Version Distribution</h5>
+                                </div>
+                                <div class="dashboard-body d-flex flex-column justify-content-center align-items-center text-center p-3"
+                                    style="min-height: 150px;">
+                                    <div class="d-flex align-items-center gap-3">
+                                        <canvas id="versionPie" width="80" height="80"></canvas>
+                                        <div>
+                                            <span class="badge bg-primary me-2">v1: 60%</span>
+                                            <span class="badge bg-success">v2: 40%</span>
+                                        </div>
+                                    </div>
+                                    <div class="text-center mt-3">
+                                        <h6 class="text-muted mb-1 small text-uppercase">Last Deploy Time</h6>
+                                        <h5 class="mb-0 fw-semibold text-dark" id="lastDeploy">2025-11-12 14:37 UTC</h5>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- B2. Deployment Overview: Rollout Sliders -->
+                        <div class="col-lg-6 d-flex">
+                            <div class="card dashboard-card flex-fill">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Rollout Controls</h5>
+                                </div>
+                                <div class="dashboard-body d-flex flex-column justify-content-center p-3"
+                                    style="min-height: 150px;">
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="fw-semibold text-primary">v1 Rollout</span>
+                                            <span class="small fw-bold" id="rolloutV1Value">60%</span>
+                                        </div>
+                                        <input type="range" class="form-range" id="rolloutV1" min="0" max="100"
+                                            value="60" disabled>
+                                    </div>
+                                    <div>
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="fw-semibold text-success">v2 Rollout</span>
+                                            <span class="small fw-bold" id="rolloutV2Value">40%</span>
+                                        </div>
+                                        <input type="range" class="form-range" id="rolloutV2" min="0" max="100"
+                                            value="40" disabled>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chart.js -->
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                        <script>
+                            const ctx = document.getElementById('versionPie');
+                            new Chart(ctx, {
+                                type: 'pie',
+                                data: {
+                                    labels: ['v1', 'v2'],
+                                    datasets: [{
+                                        data: [60, 40],
+                                        backgroundColor: ['#4e73df', '#1cc88a'],
+                                        borderWidth: 0
+                                    }]
+                                },
+                                options: {
+                                    plugins: { legend: { display: false } },
+                                    responsive: false
+                                }
+                            });
+                        </script>
+
+                        <style>
+                            .kpi {
+                                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                            }
+
+                            .kpi:hover {
+                                transform: translateY(-4px);
+                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                            }
+                        </style>
+                    </div>
+
+                    <!-- Row 2 — Accuracy & Adoption -->
+                    <div class="row g-4 mb-4">
+                        <!-- A. Forecast Accuracy Dashboard -->
+                        <div class="col-lg-6 d-flex">
+                            <div class="card dashboard-card flex-fill">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Forecast Accuracy Dashboard</h5>
+
+                                </div>
+
+                                <div class="dashboard-body p-3 d-flex flex-column justify-content-between"
+                                    style="min-height: 200px;">
+                                    <!-- Line Chart -->
+                                    <div class="mb-3">
+                                        <canvas id="forecastLine" height="100"></canvas>
+                                    </div>
+
+                                    <!-- Metrics Section -->
+                                    <div class="d-flex justify-content-between align-items-center border-top pt-2">
+                                        <div>
+                                            <h6 class="text-muted mb-1 small text-uppercase">Forecast Usefulness</h6>
+                                            <h4 class="fw-bold text-primary mb-0" id="forecastUsefulness">92.5%</h4>
+                                        </div>
+                                        <div class="text-end">
+                                            <h6 class="text-muted mb-1 small text-uppercase">Drift Status</h6>
+                                            <span class="badge bg-success" id="driftStatus">Stable</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- B. Recommendation Performance -->
+                        <div class="col-lg-6 d-flex">
+                            <div class="card dashboard-card flex-fill">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Recommendation Performance</h5>
+
+                                </div>
+
+                                <div class="dashboard-body p-3 d-flex flex-column justify-content-between"
+                                    style="min-height: 200px;">
+                                    <!-- Funnel Graph Placeholder -->
+                                    <div class="d-flex justify-content-around align-items-center mb-3 text-center">
+                                        <div>
+                                            <h6 class="text-muted small mb-1">Recommendations</h6>
+                                            <h5 class="fw-bold text-info mb-0" id="recommendations">10K</h5>
+                                        </div>
+                                        <div class="text-secondary">
+                                            <i class="bi bi-arrow-right fs-4"></i>
+                                        </div>
+                                        <div>
+                                            <h6 class="text-muted small mb-1">Actions Taken</h6>
+                                            <h5 class="fw-bold text-success mb-0" id="actions">3.8K</h5>
+                                        </div>
+                                    </div>
+
+                                    <!-- CTR / Conversion Metrics -->
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <span class="fw-semibold">CTR</span>
+                                            <span id="ctrValue" class="fw-bold text-primary">38%</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-primary" role="progressbar" style="width: 38%;">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between">
+                                            <span class="fw-semibold">Conversion Rate</span>
+                                            <span id="conversionValue" class="fw-bold text-success">12%</span>
+                                        </div>
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-success" role="progressbar" style="width: 12%;">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Adoption Trend -->
+                                    <div class="border-top pt-2">
+                                        <h6 class="text-muted mb-1 small text-uppercase">Adoption Trend</h6>
+                                        <canvas id="adoptionTrend" height="60"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Example Chart.js Setup -->
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                        <script>
+                            // Forecast Accuracy Line Chart
+                            new Chart(document.getElementById('forecastLine'), {
+                                type: 'line',
+                                data: {
+                                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'],
+                                    datasets: [
+                                        {
+                                            label: 'Predicted',
+                                            data: [80, 82, 85, 90, 92],
+                                            borderColor: '#4e73df',
+                                            tension: 0.4,
+                                            borderWidth: 2,
+                                            fill: false
+                                        },
+                                        {
+                                            label: 'Actual',
+                                            data: [78, 84, 88, 89, 94],
+                                            borderColor: '#1cc88a',
+                                            tension: 0.4,
+                                            borderWidth: 2,
+                                            fill: false
+                                        }
+                                    ]
+                                },
+                                options: {
+                                    plugins: { legend: { display: false } },
+                                    scales: {
+                                        x: { display: false },
+                                        y: { display: false }
+                                    },
+                                    responsive: true
+                                }
+                            });
+
+                            // Adoption Trend Line Chart
+                            new Chart(document.getElementById('adoptionTrend'), {
+                                type: 'line',
+                                data: {
+                                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+                                    datasets: [{
+                                        data: [20, 35, 42, 55, 68],
+                                        borderColor: '#f6c23e',
+                                        borderWidth: 2,
+                                        tension: 0.3,
+                                        fill: false
+                                    }]
+                                },
+                                options: {
+                                    plugins: { legend: { display: false } },
+                                    scales: {
+                                        x: { display: false },
+                                        y: { display: false }
+                                    },
+                                    responsive: true
+                                }
+                            });
+                        </script>
+
+                        <style>
+                            .progress {
+                                background-color: #e9ecef;
+                                border-radius: 4px;
+                            }
+
+                            .dashboard-body canvas {
+                                max-width: 100%;
+                            }
+
+                            .card .badge {
+                                font-size: 0.8rem;
+                            }
+
+                            .kpi {
+                                transition: transform 0.2s ease, box-shadow 0.2s ease;
+                            }
+
+                            .kpi:hover {
+                                transform: translateY(-4px);
+                                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+                            }
+                        </style>
+                    </div>
+
+                    <!-- Row 3 — Simulation & Rollout Controls -->
+                    <div class="row g-4 mb-4">
+                        <!-- A. Simulation Activity -->
+                        <div class="col-lg-6 d-flex">
+                            <div class="card dashboard-card flex-fill">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Simulation Activity</h5>
+                                </div>
+
+                                <div class="dashboard-body p-3 d-flex flex-column justify-content-between"
+                                    style="min-height: 200px;">
+                                    <!-- Bar Chart -->
+                                    <div class="mb-3">
+                                        <canvas id="simulationBar" height="100"></canvas>
+                                    </div>
+
+                                    <!-- Outcome Delta + Comparison -->
+                                    <div class="border-top pt-3">
+                                        <div class="row text-center">
+                                            <div class="col-4">
+                                                <h6 class="text-muted small mb-1 text-uppercase">Avg Outcome Δ</h6>
+                                                <h4 class="fw-bold text-primary mb-0" id="outcomeDelta">+4.3%</h4>
+                                            </div>
+                                            <div class="col-4 border-start border-end">
+                                                <h6 class="text-muted small mb-1 text-uppercase">Before</h6>
+                                                <h4 class="fw-bold text-danger mb-0" id="beforeValue">68%</h4>
+                                            </div>
+                                            <div class="col-4">
+                                                <h6 class="text-muted small mb-1 text-uppercase">After</h6>
+                                                <h4 class="fw-bold text-success mb-0" id="afterValue">72.3%</h4>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- B. Rollout & Routing Controls -->
+                        <div class="col-lg-6 d-flex">
+                            <div class="card dashboard-card flex-fill">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Rollout & Routing Controls</h5>
+                                </div>
+
+                                <div class="dashboard-body p-3 d-flex flex-column justify-content-between"
+                                    style="min-height: 200px;">
+                                    <!-- Sliders -->
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="fw-semibold text-primary">Model v1 Rollout</span>
+                                            <span id="modelV1Val" class="small fw-bold">55%</span>
+                                        </div>
+                                        <input type="range" class="form-range" id="modelV1Range" min="0" max="100"
+                                            value="55">
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <span class="fw-semibold text-success">Model v2 Rollout</span>
+                                            <span id="modelV2Val" class="small fw-bold">45%</span>
+                                        </div>
+                                        <input type="range" class="form-range" id="modelV2Range" min="0" max="100"
+                                            value="45">
+                                    </div>
+
+                                    <!-- Controls -->
+                                    <div class="d-flex justify-content-between align-items-center border-top pt-3">
+                                        <div>
+                                            <span class="fw-semibold me-2">Status:</span>
+                                            <span id="modelStatus" class="badge bg-success">Active</span>
+                                        </div>
+                                        <div class="d-flex gap-2">
+                                            <button class="btn btn-sm btn-outline-danger" id="disableModelBtn">
+                                                <i class="bi bi-power"></i> Disable Model
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-secondary" id="routeFallbackBtn">
+                                                <i class="bi bi-arrow-repeat"></i> Route to Fallback
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Chart.js -->
+                        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+                        <script>
+                            // Bar Chart - Simulation Activity
+                            new Chart(document.getElementById('simulationBar'), {
+                                type: 'bar',
+                                data: {
+                                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                                    datasets: [{
+                                        label: 'Simulations',
+                                        data: [40, 55, 38, 60, 72, 65, 58],
+                                        backgroundColor: '#4e73df',
+                                        borderRadius: 6
+                                    }]
+                                },
+                                options: {
+                                    plugins: { legend: { display: false } },
+                                    scales: {
+                                        x: { ticks: { color: '#6c757d' } },
+                                        y: { display: false }
+                                    },
+                                    responsive: true
+                                }
+                            });
+
+                            // Slider Logic (optional interactivity)
+                            const v1 = document.getElementById('modelV1Range');
+                            const v2 = document.getElementById('modelV2Range');
+                            v1.addEventListener('input', () => {
+                                document.getElementById('modelV1Val').textContent = v1.value + '%';
+                                v2.value = 100 - v1.value;
+                                document.getElementById('modelV2Val').textContent = v2.value + '%';
+                            });
+
+                            v2.addEventListener('input', () => {
+                                document.getElementById('modelV2Val').textContent = v2.value + '%';
+                                v1.value = 100 - v2.value;
+                                document.getElementById('modelV1Val').textContent = v1.value + '%';
+                            });
+
+                            // Button Interactions
+                            const status = document.getElementById('modelStatus');
+                            document.getElementById('disableModelBtn').addEventListener('click', () => {
+                                status.textContent = 'Disabled';
+                                status.className = 'badge bg-danger';
+                            });
+                            document.getElementById('routeFallbackBtn').addEventListener('click', () => {
+                                alert('Routing to fallback model...');
+                            });
+                        </script>
+
+                        <style>
+                            .dashboard-body canvas {
+                                max-width: 100%;
+                            }
+
+                            .card .badge {
+                                font-size: 0.8rem;
+                            }
+
+                            .btn-sm {
+                                padding: 0.25rem 0.5rem;
+                            }
+
+                            .form-range::-webkit-slider-thumb {
+                                background-color: #4e73df;
+                            }
+                        </style>
+                    </div>
+
+
+
+                    <!-- Row 4 — Training, Audit & Alerts -->
+                    <div class="row g-4 mb-4">
+
+                        <!-- A. Training & Prompt Management -->
+                        <div class="col-lg-4 d-flex">
+                            <div class="card dashboard-card flex-fill">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Training & Prompt Management</h5>
+                                </div>
+
+                                <div class="dashboard-body p-3 d-flex flex-column justify-content-between"
+                                    style="min-height: 200px;">
+                                    <!-- Action Buttons -->
+                                    <div class="d-flex flex-column gap-2 mb-3">
+                                        <button class="btn btn-sm btn-success">Start Retraining</button>
+                                        <button class="btn btn-sm btn-outline-secondary">Schedule Nightly
+                                            Training</button>
+                                    </div>
+
+                                    <!-- Editable Prompt Template -->
+                                    <div class="mt-2">
+                                        <label class="form-label small text-muted">Prompt Template</label>
+                                        <div class="input-group">
+                                            <input type="text" class="form-control" value="Generate forecast report..."
+                                                disabled>
+                                            <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                                        </div>
+                                        <small class="text-muted">Locked: Requires approval</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- B. Audit & Compliance -->
+                        <div class="col-lg-4 d-flex">
+                            <div class="card dashboard-card flex-fill">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Audit & Compliance</h5>
+                                </div>
+
+                                <div class="dashboard-body p-3 d-flex flex-column" style="min-height: 200px;">
+                                    <!-- Scrollable Log -->
+                                    <div class="mb-3 flex-fill"
+                                        style="overflow-y: auto; max-height: 120px; border: 1px solid #e9ecef; border-radius: 4px; padding: 0.5rem;">
+                                        <ul class="list-unstyled mb-0">
+                                            <li class="mb-1">
+                                                <small class="text-muted">2025-11-12 14:30</small> - Model Output A ✅
+                                                Reviewer: Jane
+                                            </li>
+                                            <li class="mb-1">
+                                                <small class="text-muted">2025-11-12 14:45</small> - Model Output B ⚠️
+                                                Reviewer: Mark
+                                            </li>
+                                            <li class="mb-1">
+                                                <small class="text-muted">2025-11-12 15:00</small> - Model Output C ✅
+                                                Reviewer: Alice
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Compliance Indicator -->
+                                    <div class="d-flex justify-content-between align-items-center mt-2">
+                                        <span class="fw-semibold">SCI Compliance</span>
+                                        <span class="badge bg-success">Compliant</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- C. Alerts & Auto-actions -->
+                        <div class="col-lg-4 d-flex">
+                            <div class="card dashboard-card flex-fill">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Alerts & Auto-actions</h5>
+                                </div>
+
+                                <div class="dashboard-body p-3 d-flex flex-column justify-content-between"
+                                    style="min-height: 200px;">
+                                    <!-- Alert List -->
+                                    <ul class="list-group mb-3 flex-fill" style="overflow-y:auto; max-height: 120px;">
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            Drift Alert
+                                            <span class="badge bg-danger">Auto</span>
+                                        </li>
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            High Error Rate Auto-disable
+                                            <span class="badge bg-danger">Auto</span>
+                                        </li>
+                                    </ul>
+
+                                    <!-- Action Buttons -->
+                                    <div class="d-flex gap-2">
+                                        <button class="btn btn-sm btn-primary flex-fill">Acknowledge</button>
+                                        <button class="btn btn-sm btn-outline-secondary flex-fill">Snooze</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <style>
+                            .dashboard-body ul {
+                                padding-left: 0;
+                            }
+
+                            .dashboard-body .list-group-item {
+                                font-size: 0.85rem;
+                                padding: 0.4rem 0.75rem;
+                            }
+
+                            .dashboard-body input.form-control[disabled] {
+                                background-color: #f8f9fa;
+                                color: #6c757d;
+                            }
+                        </style>
+                    </div>
+
+
+
+
+
+
+
+                </div>
+                <!--end::Container-->
+            </div>
+            <!--end::App Content-->
+        </main>
+
+        <!-- Generate code -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const input = document.getElementById("promoCodeInput");
+                const generateBtn = document.getElementById("generateCodeBtn");
+
+                generateBtn.addEventListener("click", function () {
+                    // Prefix list (you can customize)
+                    const prefixes = ["PROMO", "COMMU", "DEAL", "SAVE", "OFFER", "SUMM"];
+                    const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+
+                    // Generate 4–digit alphanumeric code
+                    const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+                    // Combine
+                    const code = `${prefix}-${randomPart}`;
+
+                    // Set it to input
+                    input.value = code;
+
+                    // Optional: add small visual feedback
+                    input.classList.add("border-success");
+                    setTimeout(() => input.classList.remove("border-success"), 600);
+                });
+            });
+        </script>
+
+
+        <%- include("../components/adminFooter") %>

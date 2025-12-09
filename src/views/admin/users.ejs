@@ -1,0 +1,424 @@
+<%- include("../components/adminHeader", { title: title }) %>
+
+    <%- include("../components/adminSidebar") %>
+        <!--begin::App Main-->
+        <main class="app-main">
+            <!--begin::App Content Header-->
+            <div class="app-content-header">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3 class="mb-0">Users</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end gap-2 mb-0">
+                                <button id="exportUsersBtn" class="btn btn-primary">Export Users</button>
+                            </ol>
+                        </div>
+                    </div>
+                    <!--end::Row-->
+                </div>
+                <!--end::Container-->
+            </div>
+            <!--end::App Content Header-->
+
+            <!-- ======= REGULAR USERS TABLE ======= -->
+            <div class="row g-3 mx-2">
+                <div class="col-12">
+                    <div class="card shadow-sm">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <h5 class="card-title mb-0">
+                                <i class="bi bi-people"></i> Regular Users
+                            </h5>
+                        </div>
+
+                        <div class="card-body table-responsive">
+                            <table class="table table-hover align-middle">
+                                <thead class="table-dark">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>User ID</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Stage</th>
+                                        <th>Partner Linked</th>
+                                        <th>Last Active</th>
+                                        <th>Logs</th>
+                                        <th>Forecast Last Sent</th>
+                                        <th>Forecast Rating</th>
+                                        <th>Subscription</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="regularUsersTableBody">
+                                    <tr>
+                                        <td colspan="12" class="text-center text-muted">Loading users...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+
+
+        <!-- User Detail Modal -->
+        <!-- User Detail Modal -->
+        <!-- User Detail Modal -->
+        <div class="modal fade" id="userDetailModal" tabindex="-1" aria-labelledby="userDetailModalLabel"
+            aria-hidden="true">
+            <div class="modal-dialog modal-xl modal-dialog-scrollable">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="userDetailModalLabel">User Details</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+
+                        <!-- USER DETAILS TABLE -->
+                        <table class="table table-bordered mb-4">
+                            <tbody>
+                                <tr>
+                                    <th>ID</th>
+                                    <td id="modalUserId">-</td>
+                                    <th>Name</th>
+                                    <td id="modalUserName">-</td>
+                                </tr>
+                                <tr>
+                                    <th>Email</th>
+                                    <td id="modalUserEmail">-</td>
+                                    <th>Gender</th>
+                                    <td id="modalUserGender">-</td>
+                                </tr>
+                                <tr>
+                                    <th>Stage</th>
+                                    <td id="modalUserStage">-</td>
+                                    <th>Partner Linked</th>
+                                    <td id="modalUserPartner">-</td>
+                                </tr>
+
+                                <tr>
+                                    <th>Subscription</th>
+                                    <td id="modalUserSubscription">-</td>
+                                    <th>Created At</th>
+                                    <td id="modalUserCreated">-</td>
+                                    <th>Last Active</th>
+                                    <td id="modalUserLastActive">-</td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+
+                        <div class="mb-4">
+                            <h6 class="text-secondary">Partner Consent Scopes</h6>
+                            <table class="table table-sm table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <th>Partner Linked</th>
+                                        <td id="modalPartnerLinked">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Consent Given</th>
+                                        <td id="modalPartnerConsent">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Allowed Fields</th>
+                                        <td id="modalPartnerFields">-</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Last Shared</th>
+                                        <td id="modalPartnerLastShared">-</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <div class="mb-4">
+                            <h6 class="text-secondary">Recent Logs (Last 30 Days)</h6>
+                            <div class="table-responsive" style="max-height:200px; overflow-y:auto;">
+                                <table class="table table-sm table-striped align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Type</th>
+                                            <th>Annotation</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="modalUserLogs">
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted">No logs found.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- AI FORECAST HISTORY -->
+                        <div class="mb-4">
+                            <h6 class="text-secondary">AI Forecast History & Feedback</h6>
+                            <div class="table-responsive" style="max-height:200px; overflow-y:auto;">
+                                <table class="table table-sm table-striped align-middle">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Forecast</th>
+                                            <th>User Feedback</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="modalUserForecasts">
+                                        <tr>
+                                            <td colspan="3" class="text-center text-muted">No forecasts found.</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary">Send Message</button>
+                        <button type="button" class="btn btn-success">Trigger Digest</button>
+                        <button id="exportAnonBtn" type="button" class="btn btn-info">Export Anonymized Report</button>
+                        <button type="button" class="btn btn-warning">Revoke Partner Access</button>
+                        <button type="button" class="btn btn-secondary">Impersonate (Support Only)</button>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <script>
+            // ✅ WhatsApp-style time formatter
+            function formatWhatsAppTime(dateString) {
+                const date = new Date(dateString);
+                const now = new Date();
+
+                const isToday = date.toDateString() === now.toDateString();
+
+                const yesterday = new Date();
+                yesterday.setDate(now.getDate() - 1);
+                const isYesterday = date.toDateString() === yesterday.toDateString();
+
+                const timeString = date.toLocaleTimeString([], {
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: true,
+                });
+
+                if (isToday) return `Today at ${timeString}`;
+                if (isYesterday) return `Yesterday at ${timeString}`;
+
+                return `${date.toLocaleDateString([], {
+                    day: "2-digit",
+                    month: "2-digit",
+                    year: "numeric",
+                })}, ${timeString}`;
+            }
+
+            document.addEventListener("DOMContentLoaded", async () => {
+                const tableBody = document.getElementById("regularUsersTableBody");
+
+                try {
+                    const res = await fetch("http://localhost:5000/api/users/regulars");
+                    const data = await res.json();
+
+                    if (!data.success || !data.data.length) {
+                        tableBody.innerHTML = `
+          <tr>
+            <td colspan="12" class="text-center text-muted">No regular users found.</td>
+          </tr>`;
+                        return;
+                    }
+
+                    tableBody.innerHTML = data.data
+                        .map((user, index) => {
+                            const lastActive = user.last_active
+                                ? formatWhatsAppTime(user.last_active)
+                                : "-";
+                            const forecastLastSent = user.forecast_last_sent
+                                ? formatWhatsAppTime(user.forecast_last_sent)
+                                : "-";
+
+                            return `
+            <tr data-user-id="${user.id}">
+              <td>${index + 1}</td>
+              <td>${user.id || "-"}</td>
+              <td>${user.full_name || "-"}</td>
+              <td>${user.email || "-"}</td>
+              <td>${user.menopause_phase || "-"}</td>
+              <td>
+                <span class="badge ${user.partner_id ? "bg-success" : "bg-secondary"
+                                }">
+                  ${user.partner_id ? "Yes" : "No"}
+                </span>
+              </td>
+              <td>${lastActive}</td>
+              <td>${user.logs_count_7d || 0}</td>
+              <td>${forecastLastSent}</td>
+              <td>${user.forecast_useful_rating
+                                    ? `${user.forecast_useful_rating}/5`
+                                    : "-"
+                                }</td>
+              <td>
+                <span class="badge ${user.subscription_status === "active"
+                                    ? "bg-success"
+                                    : "bg-danger"
+                                }">
+                  ${user.subscription_status || "N/A"}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-outline-secondary" title="View">
+                    <i class="bi bi-eye"></i>
+                </button>
+
+              </td>
+            </tr>
+          `;
+                        })
+                        .join("");
+                } catch (error) {
+                    console.error("❌ Error fetching users:", error);
+                    tableBody.innerHTML = `
+        <tr>
+          <td colspan="12" class="text-center text-danger">Failed to load users.</td>
+        </tr>`;
+                }
+            });
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+                const tableBody = document.getElementById("regularUsersTableBody");
+                const modal = new bootstrap.Modal(document.getElementById("userDetailModal"));
+
+
+                function formatDateTime(dateString) {
+                    if (!dateString) return "-";
+                    const date = new Date(dateString);
+                    return date.toLocaleString();
+                }
+
+
+                function populateUserModal(data) {
+                    const user = data.user;
+                    const p = data.partner_scopes;
+
+
+                    document.getElementById("modalUserId").textContent = user.id || "-";
+                    document.getElementById("modalUserName").textContent = user.full_name || "-";
+                    document.getElementById("modalUserEmail").textContent = user.email || "-";
+                    document.getElementById("modalUserGender").textContent = user.gender || "-";
+                    document.getElementById("modalUserStage").textContent = user.menopause_phase || "-";
+                    document.getElementById("modalUserPartner").textContent = user.partner_id ? "Yes" : "No";
+                    document.getElementById("modalUserSubscription").textContent = user.subscription_status || "-";
+                    document.getElementById("modalUserCreated").textContent = formatDateTime(user.created_at);
+                    document.getElementById("modalUserLastActive").textContent = formatDateTime(user.last_active);
+                    const exportBtn = document.getElementById("exportAnonBtn");
+                    exportBtn.dataset.userId = user.id;
+
+                    document.getElementById("modalPartnerLinked").textContent =
+                        p?.partner_id ? "Yes" : "No";
+
+                    document.getElementById("modalPartnerConsent").textContent =
+                        p?.consent ? "Allowed" : "Not Allowed";
+
+                    document.getElementById("modalPartnerFields").textContent =
+                        p?.shared_fields?.length ? p.shared_fields.join(", ") : "-";
+
+                    document.getElementById("modalPartnerLastShared").textContent =
+                        p?.last_shared ? formatDateTime(p.last_shared) : "-";
+
+
+                    const logsBody = document.getElementById("modalUserLogs");
+
+                    if (data.logs && data.logs.length > 0) {
+                        logsBody.innerHTML = data.logs
+                            .map(
+                                (log) => `
+                <tr>
+                    <td>${formatDateTime(log.date)}</td>
+                    <td>${log.type}</td>
+                    <td>${log.label}</td>
+                </tr>
+            `
+                            )
+                            .join("");
+                    } else {
+                        logsBody.innerHTML = `
+                <tr>
+                    <td colspan="3" class="text-center text-muted">No logs found.</td>
+                </tr>`;
+                    }
+
+
+                    const forecastsBody = document.getElementById("modalUserForecasts");
+
+                    if (data.forecasts && data.forecasts.length > 0) {
+                        forecastsBody.innerHTML = data.forecasts
+                            .map(
+                                (f) => `
+                                <tr>
+                                    <td>${formatDateTime(f.date)}</td>
+                                    <td>${JSON.stringify(f.forecast)}</td>
+                                    <td>${f.confidence ?? "-"}</td>
+                                </tr>
+            `
+                            )
+                            .join("");
+                        } else {
+                                forecastsBody.innerHTML = `
+                        <tr>
+                            <td colspan="3" class="text-center text-muted">No forecasts found.</td>
+                        </tr>`;
+                            }
+
+
+
+                    modal.show();
+                }
+
+                tableBody.addEventListener("click", async (e) => {
+                    const tr = e.target.closest("tr");
+                    if (!tr || !tr.dataset.userId) return;
+
+                    const userId = tr.dataset.userId;
+
+                    try {
+                        const res = await fetch(`http://localhost:5000/api/users/find/${userId}`);
+                        const data = await res.json();
+
+                        if (data.success) {
+                            populateUserModal(data);
+                        } else {
+                            alert("Failed to fetch user details.");
+                        }
+                    } catch (err) {
+                        console.error("User detail fetch error:", err);
+                        alert("Error fetching user details.");
+                    }
+                });
+            });
+        </script>
+
+        <script>
+        document.addEventListener("click", function (e) {
+            if (e.target.id === "exportAnonBtn") {
+                const userId = e.target.dataset.userId;
+                window.location.href = `/api/users/${userId}/export/anonymized`;
+            }
+        });
+        </script>
+
+
+
+
+        <!--end::App Main-->
+        <%- include("../components/adminFooter") %>

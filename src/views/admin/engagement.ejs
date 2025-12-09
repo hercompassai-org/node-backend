@@ -1,0 +1,445 @@
+<%- include("../components/adminHeader", { title: title }) %>
+
+    <%- include("../components/adminSidebar") %>
+
+        <main class="app-main">
+            <!--begin::App Content Header-->
+            <div class="app-content-header">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3 class="mb-0">Engagement</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end gap-2 mb-0">
+                                <!-- <button class="btn btn-primary">Button 1</button> -->
+                                <!-- 1. Date Range Selector -->
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-primary dropdown-toggle"
+                                        data-bs-toggle="dropdown">
+                                        Date Range: <span class="fw-semibold">7d</span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Today</a></li>
+                                        <li><a class="dropdown-item active" href="#">Last 7 Days</a></li>
+                                        <li><a class="dropdown-item" href="#">Last 30 Days</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item" href="#">Custom Range…</a></li>
+                                    </ul>
+                                </div>
+
+                                <!-- 2. Segment Filter -->
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-primary dropdown-toggle"
+                                        data-bs-toggle="dropdown">
+                                        Segment: <span class="fw-semibold">All Users</span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item active" href="#">All Users</a></li>
+                                        <li><a class="dropdown-item" href="#">New Users</a></li>
+                                        <li><a class="dropdown-item" href="#">Returning Users</a></li>
+                                        <li><a class="dropdown-item" href="#">Paid Users</a></li>
+                                        <li><a class="dropdown-item" href="#">Trial Users</a></li>
+                                    </ul>
+                                </div>
+
+                                <!-- 3. Export / Share -->
+                                <div class="dropdown ms-auto">
+                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle"
+                                        data-bs-toggle="dropdown">
+                                        Export
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-csv me-2"></i>
+                                                Export as CSV</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-pdf me-2"></i>
+                                                Export as PDF</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item" href="#"><i class="bi bi-share me-2"></i> Copy
+                                                Dashboard Link</a></li>
+                                    </ul>
+                                </div>
+                            </ol>
+                        </div>
+                    </div>
+                    <!--end::Row-->
+                </div>
+                <!--end::Container-->
+            </div>
+            <!--end::App Content Header-->
+            <!--begin::App Content-->
+            <div class="app-content">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!-- ======= ENGAGEMENT ANALYTICS (2x2 GRID) ======= -->
+                    <!-- ======= ENGAGEMENT ANALYTICS (2x2 GRID - EQUAL HEIGHT) ======= -->
+                    <style>
+                        /* Make all dashboard cards in a row the same height */
+                        .equal-height-row {
+                            display: flex;
+                            flex-wrap: wrap;
+                        }
+
+                        .equal-height-row>[class*="col-"] {
+                            display: flex;
+                        }
+
+                        .equal-height-row .dashboard-card {
+                            display: flex;
+                            flex-direction: column;
+                            flex-grow: 1;
+                        }
+
+                        .equal-height-row .dashboard-body {
+                            flex-grow: 1;
+                        }
+                    </style>
+
+                    <div class="row g-4 mb-4 equal-height-row">
+
+                        <!-- 1. Logging Frequency Heatmap -->
+                        <div class="col-lg-6 col-md-12">
+                            <div class="card dashboard-card">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Logging Frequency Heatmap</h5>
+                                    <select class="form-select form-select-sm w-auto">
+                                        <option>Last 7 Days</option>
+                                        <option>Last 30 Days</option>
+                                    </select>
+                                </div>
+                                <div class="dashboard-body p-3">
+                                    <div id="loggingHeatmap"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Retention Cohorts -->
+                        <div class="col-lg-6 col-md-12">
+                            <div class="card dashboard-card">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Retention Cohorts</h5>
+                                    <select class="form-select form-select-sm w-auto">
+                                        <option>7d</option>
+                                        <option>1d</option>
+                                        <option>14d</option>
+                                    </select>
+                                </div>
+                                <div class="dashboard-body p-3">
+                                    <div id="retentionChart"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. Streaks Distribution -->
+                        <div class="col-lg-6 col-md-12">
+                            <div class="card dashboard-card">
+                                <div class="card-header dashboard-header">
+                                    <h5 class="card-title mb-0">Streaks Distribution</h5>
+                                </div>
+                                <div class="dashboard-body p-3">
+                                    <div id="streaksBar"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 4. Feature-Specific Depth -->
+                        <div class="col-lg-6 col-md-12">
+                            <div class="card dashboard-card">
+                                <div class="card-header dashboard-header">
+                                    <h5 class="card-title mb-0">Feature-Specific Depth</h5>
+                                </div>
+                                <div class="dashboard-body p-3 d-flex flex-column justify-content-between">
+                                    <div class="row text-center mb-2">
+                                        <div class="col-6 border-end">
+                                            <h6 class="text-muted mb-1">Men’s Academy</h6>
+                                            <h3 class="fw-bold mb-0">22m</h3>
+                                            <p class="small text-success mb-0">↑ 6% vs last week</p>
+                                        </div>
+                                        <div class="col-6">
+                                            <h6 class="text-muted mb-1">Lesson Completion</h6>
+                                            <h3 class="fw-bold mb-0">78%</h3>
+                                            <p class="small text-danger mb-0">↓ 2% vs last week</p>
+                                        </div>
+                                    </div>
+                                    <div id="featureDepth"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ======= ENGAGEMENT CONTROLS ======= -->
+                    <div class="row g-4 mb-4">
+
+                        <!-- 1. Configure Re-Engagement Email Templates -->
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card dashboard-card h-100">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Re-Engagement Emails</h5>
+                                    <span class="badge bg-info text-dark">Automation</span>
+                                </div>
+                                <div class="dashboard-body p-3 d-flex flex-column justify-content-between">
+                                    <p class="text-muted mb-2">Customize email templates sent to inactive users (7d,
+                                        14d, 30d).</p>
+                                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                                        <button class="btn btn-sm btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#emailTemplateModal">
+                                            Configure Templates
+                                        </button>
+                                        <small class="text-success">3 templates active</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 2. Schedule Push Campaigns -->
+                        <div class="col-lg-4 col-md-6">
+                            <div class="card dashboard-card h-100">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Push Campaigns</h5>
+                                    <div class="form-check form-switch m-0">
+                                        <input class="form-check-input" type="checkbox" id="pushCampaignToggle" checked>
+                                    </div>
+                                </div>
+                                <div class="dashboard-body p-3 d-flex flex-column justify-content-between">
+                                    <p class="text-muted mb-2">Send re-engagement pushes to low-activity cohorts
+                                        automatically.</p>
+                                    <div class="mt-auto d-flex justify-content-between align-items-center">
+                                        <button class="btn btn-sm btn-outline-primary"
+                                            id="schedulePushBtn">Schedule</button>
+                                        <small class="text-muted">Next: <strong>Thu 10:00 AM</strong></small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 3. A/B Test Control for Onboarding -->
+                        <div class="col-lg-4 col-md-12">
+                            <div class="card dashboard-card h-100">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Onboarding A/B Test</h5>
+                                    <span class="badge bg-secondary">Experiment</span>
+                                </div>
+                                <div class="dashboard-body p-3 d-flex flex-column justify-content-between">
+                                    <p class="text-muted mb-2">Toggle onboarding screen variants for new user
+                                        experiments.</p>
+                                    <div class="mt-auto">
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <span>Variant A</span>
+                                            <div class="form-check form-switch m-0">
+                                                <input class="form-check-input" type="checkbox" id="variantAToggle"
+                                                    checked>
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span>Variant B</span>
+                                            <div class="form-check form-switch m-0">
+                                                <input class="form-check-input" type="checkbox" id="variantBToggle">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!-- ======= MODAL: Configure Email Templates ======= -->
+                    <div class="modal fade" id="emailTemplateModal" tabindex="-1"
+                        aria-labelledby="emailTemplateModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg modal-dialog-centered">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h5 class="modal-title" id="emailTemplateModalLabel">Configure Re-Engagement Emails
+                                    </h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">7-Day Inactive Template</label>
+                                            <textarea class="form-control"
+                                                rows="3">Hey {{name}}, we noticed you haven’t logged in recently — new lessons are waiting!</textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">14-Day Inactive Template</label>
+                                            <textarea class="form-control"
+                                                rows="3">Still interested in Men’s Academy? Come back for personalized progress insights.</textarea>
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label fw-semibold">30-Day Inactive Template</label>
+                                            <textarea class="form-control"
+                                                rows="3">We miss you! Here’s a 15% discount if you rejoin today.</textarea>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                    <button class="btn btn-primary">Save Templates</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ======= JS (Optional Behaviors) ======= -->
+                    <script>
+                        // Handle toggles and scheduling
+                        document.getElementById('pushCampaignToggle').addEventListener('change', e => {
+                            alert(e.target.checked
+                                ? 'Push campaigns enabled'
+                                : 'Push campaigns disabled');
+                        });
+
+                        document.getElementById('schedulePushBtn').addEventListener('click', () => {
+                            alert('Push campaign scheduled for next low-engagement cohort run.');
+                        });
+
+                        document.getElementById('variantAToggle').addEventListener('change', () => {
+                            if (document.getElementById('variantAToggle').checked) {
+                                document.getElementById('variantBToggle').checked = false;
+                            }
+                        });
+                        document.getElementById('variantBToggle').addEventListener('change', () => {
+                            if (document.getElementById('variantBToggle').checked) {
+                                document.getElementById('variantAToggle').checked = false;
+                            }
+                        });
+                    </script>
+
+
+
+                    <!-- ======= SAMPLE SCRIPTS (ApexCharts) ======= -->
+                    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+                    <script>
+                        // --- 1. Logging Frequency Heatmap ---
+                        const rawHeatmap = <%- JSON.stringify(stats.heatmapData) %>;
+
+                        const hours = [...Array(24).keys()].map(h => `${h}:00`);
+                        const weekdays = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
+
+                        // Structure to fill zeros for missing hours
+                        const heatmapMap = {};
+                        weekdays.forEach(day => {
+                            heatmapMap[day] = Array(24).fill(0);
+                        });
+
+                        // Fill with DB values
+                        rawHeatmap.forEach(row => {
+                            const day = row.weekday;
+                            const hour = row.hour;
+                            if (heatmapMap[day]) {
+                                heatmapMap[day][hour] = row.login_count;
+                            }
+                        });
+
+                        // Convert to ApexCharts series
+                        const heatSeries = weekdays.map(day => ({
+                            name: day,
+                            data: heatmapMap[day]
+                        }));
+
+                        new ApexCharts(document.querySelector("#loggingHeatmap"), {
+                            chart: { type: 'heatmap', height: 220 },
+                            colors: ['#007bff'],
+                            dataLabels: { enabled: false },
+                            series: heatSeries,
+                            xaxis: { categories: hours },
+                            tooltip: {
+                                y: {
+                                    formatter: val => `${val} logins`
+                                }
+                            }
+                        }).render();
+
+                        // --- 2. Retention Cohorts (LTV & Retention %) ---
+
+                        const retentionCategories = <%- JSON.stringify(stats.chorts.categories) %>;
+                        const retentionSeries = <%- JSON.stringify(stats.chorts.retention_series) %>;
+                        const ltvSeries = <%- JSON.stringify(stats.chorts.ltv_series) %>;
+
+                        new ApexCharts(document.querySelector("#retentionChart"), {
+                            chart: { type: 'line', height: 220, toolbar: { show: false } },
+                            series: [
+                                { name: '% Retained', data: retentionSeries },
+                                { name: 'LTV (₹)', data: ltvSeries }
+                            ],
+                            colors: ['#28a745', '#ffc107'],
+                            xaxis: { categories: retentionCategories },
+                            yaxis: [{ title: { text: '% Retained' } }, { opposite: true, title: { text: 'LTV' } }],
+                            tooltip: { shared: true, intersect: false }
+                        }).render();
+
+                        // --- 3. Streaks Distribution ---
+                        new ApexCharts(document.querySelector("#streaksBar"), {
+                            chart: { type: 'bar', height: 220 },
+                            plotOptions: { bar: { horizontal: true } },
+                            series: [{
+                                name: '% Users', data: [
+                                <%= stats.streak.total_streak_3_day %>, 
+                                <%= stats.streak.total_streak_7_day %>, 
+                                <%= stats.streak.total_streak_14_day %>, 
+                                <%= stats.streak.total_streak_30_day %>]
+                            }],
+                            xaxis: { categories: ['3-day', '7-day', '14-day', '30-day'] },
+                            colors: ['#20c997'],
+                            tooltip: { y: { formatter: val => `${val}% (${Math.floor(val * 50)} users)` } }
+                        }).render();
+
+                        // --- 4. Feature-Specific Depth (Comparison Sparkline) ---
+                        new ApexCharts(document.querySelector("#featureDepth"), {
+                            chart: { type: 'line', height: 80, sparkline: { enabled: true } },
+                            series: [
+                                { name: 'Men’s Academy Time', data: [20, 21, 22, 23, 22, 24, 22] },
+                                { name: 'Lesson Completion %', data: [75, 77, 79, 78, 80, 79, 78] }
+                            ],
+                            colors: ['#007bff', '#ffc107']
+                        }).render();
+                    </script>
+
+                </div>
+                <!--end::Container-->
+            </div>
+            <!--end::App Content-->
+        </main>
+
+        <!-- Generate code -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const input = document.getElementById("promoCodeInput");
+                const generateBtn = document.getElementById("generateCodeBtn");
+
+                generateBtn.addEventListener("click", function () {
+                    // Prefix list (you can customize)
+                    const prefixes = ["PROMO", "COMMU", "DEAL", "SAVE", "OFFER", "SUMM"];
+                    const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+
+                    // Generate 4–digit alphanumeric code
+                    const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+                    // Combine
+                    const code = `${prefix}-${randomPart}`;
+
+                    // Set it to input
+                    input.value = code;
+
+                    // Optional: add small visual feedback
+                    input.classList.add("border-success");
+                    setTimeout(() => input.classList.remove("border-success"), 600);
+                });
+            });
+        </script>
+
+
+        <%- include("../components/adminFooter") %>

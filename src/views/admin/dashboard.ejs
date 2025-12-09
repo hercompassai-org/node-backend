@@ -1,0 +1,338 @@
+<%- include("../components/adminHeader", { title: title }) %>
+
+    <%- include("../components/adminSidebar") %>
+        <!--begin::App Main-->
+        <main class="app-main">
+            <!--begin::App Content Header-->
+            <div class="app-content-header">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3 class="mb-0">Dashboard</h3>
+                        </div>
+                        
+                    </div>
+                    <!--end::Row-->
+                </div>
+                <!--end::Container-->
+            </div>
+            <!--end::App Content Header-->
+            <!--begin::App Content-->
+            <div class="app-content">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row g-3 mb-4">
+                        <!-- Card 1 -->
+                        <div class="col-lg-3 col-6">
+                            <div class="card text-white position-relative"
+                                style="background-color:#007bff; border:none; border-radius:10px; overflow:hidden;">
+                                <div class="card-body">
+                                    <h3 class="fw-bold mb-1"><%= stats.totalUsers %></h3>
+                                    <p class="mb-0">Total Users</p>
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                        style="font-size:3rem; opacity:0.3;">
+                                        <i class="bi bi-person-circle"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div class="col-lg-3 col-6">
+                            <div class="card text-white position-relative"
+                                style="background-color:#28a745; border:none; border-radius:10px;">
+                                <div class="card-body">
+                                    <h3 class="fw-bold mb-1"><%= stats.activeUsers %> <sup>%</sup></h3>
+                                    <p class="mb-0">Active Users</p>
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                        style="font-size:3rem; opacity:0.3;">
+                                        <i class="bi bi-activity"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div class="col-lg-3 col-6">
+                            <div class="card text-white position-relative"
+                                style="background-color:#ffc107; border:none; border-radius:10px;">
+                                <div class="card-body">
+                                    <h3 class="fw-bold mb-1"><%= stats.activationRate %></h3>
+                                    <p class="mb-0">Activation Rate</p>
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                        style="font-size:3rem; opacity:0.3;">
+                                        <i class="bi-rocket-takeoff"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div class="col-lg-3 col-6">
+                            <div class="card text-white position-relative"
+                                style="background-color:#dc3545; border:none; border-radius:10px;">
+                                <div class="card-body">
+                                    <h3 class="fw-bold mb-1"><%= stats.partnersLinked %></h3>
+                                    <p class="mb-0">Partners Linked</p>
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                        style="font-size:3rem; opacity:0.3;">
+                                        <i class="bi bi-people-fill"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 5 -->
+                        <div class="col-lg-3 col-6">
+                            <div class="card text-white position-relative"
+                                style="background-color:#6f42c1; border:none; border-radius:10px;">
+                                <div class="card-body">
+                                    <h3 class="fw-bold mb-1"><%= stats.forecastsDelivered %></h3>
+                                    <p class="mb-0">Forecasts Delivered / Week</p>
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                        style="font-size:3rem; opacity:0.3;">
+                                        <i class="bi bi-calendar4-week"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 6 -->
+                        <div class="col-lg-3 col-6">
+                            <div class="card text-white position-relative"
+                                style="background-color:#17a2b8; border:none; border-radius:10px;">
+                                <div class="card-body">
+                                    <h3 class="fw-bold mb-1"><%= stats.forecastUsefulness %></h3>
+                                    <p class="mb-0">Forecast Usefulness</p>
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                        style="font-size:3rem; opacity:0.3;">
+                                        <i class="bi bi-star-half"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 7 -->
+                        <div class="col-lg-3 col-6">
+                            <div class="card text-white position-relative"
+                                style="background-color:#fd7e14; border:none; border-radius:10px;">
+                                <div class="card-body">
+                                    <h3 class="fw-bold mb-1"><%= stats.contentVerified %></h3>
+                                    <p class="mb-0">Content Verified</p>
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                        style="font-size:3rem; opacity:0.3;">
+                                        <i class="bi bi-patch-check-fill"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 8 -->
+                        <div class="col-lg-3 col-6">
+                            <div class="card text-white position-relative"
+                                style="background-color:#20c997; border:none; border-radius:10px;">
+                                <div class="card-body">
+                                    <h3 class="fw-bold mb-1"><%= stats.churn %></h3>
+                                    <p class="mb-0">Churn (14d)</p>
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                        style="font-size:3rem; opacity:0.3;">
+                                        <i class="bi bi-arrow-counterclockwise"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--end::Row-->
+                    <!--begin::Row-->
+                    <!-- Include ApexCharts -->
+                    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+                    <div class="row g-3">
+                        <!-- ======= TOP ROW ======= -->
+
+                        <!-- Engagement Trend -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Engagement Trend (DAU / WAU / MAU)</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="engagementTrend"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Feature Adoption -->
+                        <div class="col-lg-6">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Feature Adoption (Stacked)</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="featureAdoption"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ======= BOTTOM ROW ======= -->
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Partner Digest Opens (by Weekday)</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="partnerOpens"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">AI Model Health</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="aiModelHealth"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h5 class="card-title mb-0">Content Verification Heatmap</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div id="contentVerification"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <script>
+                        // ============ ENGAGEMENT TREND (Line) ============
+                        var engagementOptions = {
+                            chart: {
+                                type: 'line',
+                                height: 280,
+                                toolbar: { show: false }
+                            },
+                            series: [
+                                { name: 'DAU', data: [320, 410, 380, 470, 520, 610, 680] },
+                                { name: 'WAU', data: [1250, 1320, 1450, 1500, 1600, 1720, 1800] },
+                                { name: 'MAU', data: [4500, 4700, 4800, 4900, 5100, 5300, 5500] }
+                            ],
+                            xaxis: {
+                                categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+                            },
+                            colors: ['#007bff', '#28a745', '#ffc107'],
+                            stroke: { width: 3, curve: 'smooth' },
+                            markers: { size: 4 },
+                            tooltip: { shared: true, intersect: false }
+                        };
+                        new ApexCharts(document.querySelector("#engagementTrend"), engagementOptions).render();
+                        
+                        var adoptionOptions = {
+                            chart: {
+                                type: 'bar',
+                                stacked: true,
+                                height: 280,
+                                toolbar: { show: false }
+                            },
+                            series: [
+                                { name: 'Mood Logs', data: [30, 40, 35, 50, 49, 60, 70] },
+                                { name: 'Recipe Views', data: [20, 30, 25, 35, 40, 45, 50] },
+                                { name: 'Workouts', data: [15, 20, 18, 25, 30, 35, 40] },
+                                { name: 'Meditations', data: [10, 15, 12, 18, 20, 22, 25] },
+                                { name: 'Community Posts', data: [5, 10, 8, 12, 14, 16, 18] }
+                            ],
+                            xaxis: { categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
+                            colors: ['#007bff', '#17a2b8', '#28a745', '#ffc107', '#dc3545'],
+                            legend: { position: 'bottom' }
+                        };
+                        new ApexCharts(document.querySelector("#featureAdoption"), adoptionOptions).render();
+
+
+                        // ============ PARTNER DIGEST OPENS (Sparkline Heatmap) ============
+                        var partnerOptions = {
+                            chart: {
+                                type: 'heatmap',
+                                height: 280,
+                                toolbar: { show: false }
+                            },
+                            dataLabels: { enabled: false },
+                            colors: ["#0d6efd"],
+                            series: [
+                                { name: 'Mon', data: genRandom(24) },
+                                { name: 'Tue', data: genRandom(24) },
+                                { name: 'Wed', data: genRandom(24) },
+                                { name: 'Thu', data: genRandom(24) },
+                                { name: 'Fri', data: genRandom(24) },
+                                { name: 'Sat', data: genRandom(24) },
+                                { name: 'Sun', data: genRandom(24) }
+                            ],
+                            xaxis: { categories: Array.from({ length: 24 }, (_, i) => i + ":00") },
+                            title: { text: '' }
+                        };
+                        function genRandom(count) {
+                            return Array.from({ length: count }, () => Math.floor(Math.random() * 90));
+                        }
+                        new ApexCharts(document.querySelector("#partnerOpens"), partnerOptions).render();
+
+
+                        // ============ AI MODEL HEALTH (Mixed chart) ============
+                        var aiOptions = {
+                            chart: {
+                                height: 280,
+                                type: 'line',
+                                stacked: false
+                            },
+                            series: [
+                                { name: "Requests/min", type: 'column', data: [100, 150, 130, 180, 200, 210, 190] },
+                                { name: "Avg Latency (ms)", type: 'line', data: [220, 200, 230, 210, 250, 240, 230] },
+                                { name: "Error Rate %", type: 'line', data: [1.2, 0.8, 1.5, 1.1, 1.3, 0.9, 1.0] }
+                            ],
+                            colors: ['#007bff', '#ffc107', '#dc3545'],
+                            stroke: { width: [0, 3, 3], curve: 'smooth' },
+                            xaxis: { categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
+                            yaxis: [
+                                { title: { text: 'Requests/min' } },
+                                { opposite: true, title: { text: 'Latency / Error %' } }
+                            ],
+                            legend: { position: 'bottom' }
+                        };
+                        new ApexCharts(document.querySelector("#aiModelHealth"), aiOptions).render();
+
+
+                        // ============ CONTENT VERIFICATION HEATMAP ============
+                        var contentOptions = {
+                            chart: {
+                                type: 'heatmap',
+                                height: 280,
+                                toolbar: { show: false }
+                            },
+                            dataLabels: { enabled: false },
+                            colors: ["#28a745"],
+                            series: [
+                                { name: 'Recipes', data: [80, 20] },
+                                { name: 'Courses', data: [70, 30] },
+                                { name: 'Workouts', data: [85, 15] },
+                                { name: 'Articles', data: [90, 10] },
+                                { name: 'Tips', data: [65, 35] }
+                            ],
+                            xaxis: { categories: ['Verified', 'Unverified'] }
+                        };
+                        new ApexCharts(document.querySelector("#contentVerification"), contentOptions).render();
+                    </script>
+
+                    <!-- /.row (main row) -->
+                </div>
+                <!--end::Container-->
+            </div>
+            <!--end::App Content-->
+        </main>
+        <!--end::App Main-->
+        <%- include("../components/adminFooter") %>

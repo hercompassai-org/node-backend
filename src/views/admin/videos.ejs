@@ -1,0 +1,201 @@
+<%- include("../components/adminHeader", { title: title }) %>
+<%- include("../components/adminSidebar") %>
+
+<%
+function embedUrl(url) {
+    if (!url) return null;
+
+    const ytMatch = url.match(/(?:youtu\.be\/|youtube\.com\/watch\?v=)([^&]+)/);
+    if (ytMatch) {
+        return "https://www.youtube.com/embed/" + ytMatch[1];
+    }
+
+    return url;
+}
+%>
+
+<main class="app-main">
+
+    <!-- Page Title -->
+    <div class="row">
+        <div class="col-md-12 mb-4">
+            <h3 class="fw-bold">Support Videos</h3>
+            <p class="text-muted"> Manage all support videos (Exercise, Meditation, Recipes, Academy)</p>
+        </div>
+    </div>
+
+    <!-- Upload Form -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <h4 class="card-title">Upload New Video</h4>
+
+            <form id="videoUploadForm" enctype="multipart/form-data">
+
+                <div class="row">
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Video Title</label>
+                        <input type="text" name="title" class="form-control" required />
+                    </div>
+
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Category</label>
+                        <select name="category" class="form-control" required>
+                            <option value="">Select Category</option>
+                            <option value="exercise">Exercise</option>
+                            <option value="meditation">Meditation</option>
+                            <option value="recipes">Recipes</option>
+                            <option value="academy">Men's Academy</option>
+                        </select>
+                    </div>
+
+                 
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Video URL (YouTube / MP4)</label>
+                        <input type="url" name="videoUrl" class="form-control"
+                               placeholder="Paste URL" />
+                    </div>
+
+                  
+                    <div class="col-md-4 mb-3">
+                        <label class="form-label">Upload Video File</label>
+                        <input type="file" name="video" class="form-control" accept="video/*" />
+                    </div>
+
+                </div>
+
+                <button type="submit" class="btn btn-primary mt-2">Upload Video</button>
+                <span id="uploadStatus" class="ms-3"></span>
+
+            </form>
+        </div>
+    </div>
+
+    <!-- VIDEO TABLE -->
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title mb-3">All Uploaded Videos</h4>
+
+            <% if (videos.length === 0) { %>
+                <p>No videos uploaded yet.</p>
+            <% } else { %>
+
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th width="20%">Title</th>
+                            <th width="15%">Category</th>
+                            <th width="40%">Preview</th>
+                            <th width="15%">Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <% videos.forEach(v => { %>
+                            <tr id="row-<%= v.id %>">
+
+                                <td><%= v.title %></td>
+
+                                <td><%= v.category %></td>
+
+                                <!-- ONLY ONE PREVIEW -->
+                                <td>
+                                    <% if (v.video_url) { %>
+
+                                        <iframe width="240" height="140"
+                                            src="<%= embedUrl(v.video_url) %>"
+                                            frameborder="0" allowfullscreen></iframe>
+
+                                    <% } else if (v.video_file) { %>
+
+                                        <video width="240" controls>
+                                            <source src="<%= v.video_file %>" type="video/mp4">
+                                        </video>
+
+                                    <% } else { %>
+
+                                        <span class="text-muted">No Preview</span>
+
+                                    <% } %>
+                                </td>
+
+                                <td>
+                                    <button class="btn btn-danger deleteBtn"
+                                            data-id="<%= v.id %>">Delete</button>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+
+            <% } %>
+        </div>
+    </div>
+
+</main>
+
+<script>
+    // CONDITION CHECK: Either URL OR File (not both)
+    document.getElementById("videoUploadForm").addEventListener("submit", function (e) {
+
+        const url = this.videoUrl.value.trim();
+        const file = this.video.files[0];
+
+        if (url && file) {
+            e.preventDefault();
+            alert("❌ Please choose ONLY one: Video URL OR Video File.");
+            return;
+        }
+
+        if (!url && !file) {
+            e.preventDefault();
+            alert("❌ Please provide Video URL or Upload a File.");
+            return;
+        }
+    });
+
+    // Upload AJAX
+    document.getElementById("videoUploadForm").addEventListener("submit", async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        document.getElementById("uploadStatus").innerHTML = "Uploading...";
+
+        const res = await fetch("/videos", {
+            method: "POST",
+            body: formData
+        });
+
+        const data = await res.json();
+
+        if (data.success) {
+            document.getElementById("uploadStatus").innerHTML = "✔ Uploaded!";
+            setTimeout(() => window.location.reload(), 800);
+        } else {
+            document.getElementById("uploadStatus").innerHTML = "❌ Error uploading";
+        }
+    });
+
+    // DELETE VIDEO
+    document.querySelectorAll(".deleteBtn").forEach(btn => {
+        btn.addEventListener("click", function () {
+            const id = this.dataset.id;
+            deleteVideo(id);
+        });
+    });
+
+    async function deleteVideo(id) {
+        if (!confirm("Confirm delete this video?")) return;
+
+        const res = await fetch(`/videos/${id}`, { method: "DELETE" });
+        const data = await res.json();
+
+        if (data.success) {
+            document.getElementById(`row-${id}`).remove();
+        } else {
+            alert("Failed to delete video");
+        }
+    }
+</script>
+
+<%- include("../components/adminFooter") %>

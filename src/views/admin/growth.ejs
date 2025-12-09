@@ -1,0 +1,682 @@
+<%- include("../components/adminHeader", { title: title }) %>
+
+    <%- include("../components/adminSidebar") %>
+
+        <main class="app-main">
+            <!--begin::App Content Header-->
+            <div class="app-content-header">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <h3 class="mb-0">Growth</h3>
+                        </div>
+                        <div class="col-sm-6">
+                            <ol class="breadcrumb float-sm-end gap-2 mb-0">
+                                <!-- <button class="btn btn-primary">Button 1</button> -->
+                                <!-- 1. Date Range Selector -->
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-primary dropdown-toggle"
+                                        data-bs-toggle="dropdown">
+                                        Date Range: <span class="fw-semibold">7d</span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item" href="#">Today</a></li>
+                                        <li><a class="dropdown-item active" href="#">Last 7 Days</a></li>
+                                        <li><a class="dropdown-item" href="#">Last 30 Days</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item" href="#">Custom Range…</a></li>
+                                    </ul>
+                                </div>
+
+                                <!-- 2. Segment Filter -->
+                                <div class="dropdown">
+                                    <button type="button" class="btn btn-primary dropdown-toggle"
+                                        data-bs-toggle="dropdown">
+                                        Segment: <span class="fw-semibold">All Users</span>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a class="dropdown-item active" href="#">All Users</a></li>
+                                        <li><a class="dropdown-item" href="#">New Users</a></li>
+                                        <li><a class="dropdown-item" href="#">Returning Users</a></li>
+                                        <li><a class="dropdown-item" href="#">Paid Users</a></li>
+                                        <li><a class="dropdown-item" href="#">Trial Users</a></li>
+                                    </ul>
+                                </div>
+
+                                <!-- 3. Export / Share -->
+                                <div class="dropdown ms-auto">
+                                    <button type="button" class="btn btn-outline-secondary dropdown-toggle"
+                                        data-bs-toggle="dropdown">
+                                        Export
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-csv me-2"></i>
+                                                Export as CSV</a></li>
+                                        <li><a class="dropdown-item" href="#"><i class="bi bi-filetype-pdf me-2"></i>
+                                                Export as PDF</a></li>
+                                        <li>
+                                            <hr class="dropdown-divider">
+                                        </li>
+                                        <li><a class="dropdown-item" href="#"><i class="bi bi-share me-2"></i> Copy
+                                                Dashboard Link</a></li>
+                                    </ul>
+                                </div>
+                            </ol>
+                        </div>
+                    </div>
+                    <!--end::Row-->
+                </div>
+                <!--end::Container-->
+            </div>
+            <!--end::App Content Header-->
+            <!--begin::App Content-->
+            <div class="app-content">
+                <!--begin::Container-->
+                <div class="container-fluid">
+                    <!--begin::Row-->
+                    <div class="row g-3 mb-4">
+                        <!-- Card 1: Invites Sent -->
+                        <div class="col-lg-3 col-6">
+                            <div class="card text-white position-relative"
+                                style="background-color:#007bff; border:none; border-radius:10px; overflow:hidden;">
+                                <div class="card-body">
+                                    <h3 class="fw-bold mb-1">
+                                        <%= stats.invitesSent %>
+                                    </h3>
+                                    <p class="mb-0">Invites Sent</p>
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                        style="font-size:3rem; opacity:0.3;">
+                                        <i class="bi bi-envelope-paper"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 2: Invites Accepted -->
+                        <div class="col-lg-3 col-6">
+                            <div class="card text-white position-relative"
+                                style="background-color:#28a745; border:none; border-radius:10px;">
+                                <div class="card-body">
+                                    <h3 class="fw-bold mb-1">
+                                        <%= stats.accepted %>
+                                    </h3>
+                                    <p class="mb-0">Invites Accepted</p>
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                        style="font-size:3rem; opacity:0.3;">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 3: Activations -->
+                        <div class="col-lg-3 col-6">
+                            <div class="card text-white position-relative"
+                                style="background-color:#ffc107; border:none; border-radius:10px;">
+                                <div class="card-body">
+                                    <h3 class="fw-bold mb-1">
+                                        <%= stats.activated %>
+                                    </h3>
+                                    <p class="mb-0">Activations</p>
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                        style="font-size:3rem; opacity:0.3;">
+                                        <i class="bi bi-lightning-charge-fill"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Card 4: Linked Partners -->
+                        <div class="col-lg-3 col-6">
+                            <div class="card text-white position-relative"
+                                style="background-color:#dc3545; border:none; border-radius:10px;">
+                                <div class="card-body">
+                                    <h3 class="fw-bold mb-1">
+                                        <%= stats.userLinked %>
+                                    </h3>
+                                    <p class="mb-0">Linked Partners</p>
+                                    <span class="position-absolute top-50 end-0 translate-middle-y me-3"
+                                        style="font-size:3rem; opacity:0.3;">
+                                        <i class="bi bi-people-fill"></i>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!--end::Row-->
+                    <!--begin::Row-->
+                    <!-- Include ApexCharts -->
+                    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+
+                    <!-- ======= FUNNEL GRAPHS ======= -->
+                    <!-- ======= STYLE (compact chart layout) ======= -->
+                    <style>
+                        /* Target only dashboard cards */
+                        .dashboard-card {
+                            display: flex;
+                            flex-direction: column;
+                            height: 100%;
+                            min-height: 100px;
+                            /* uniform height for all cards */
+                        }
+
+                        .dashboard-card .dashboard-body {
+                            flex-grow: 1;
+                            padding: 0.75rem 1rem 0.5rem 1rem;
+                        }
+
+                        .dashboard-card .dashboard-header h5 {
+                            font-size: 0.95rem;
+                            margin: 0;
+                        }
+
+                        /* Chart heights */
+                        #referralFunnel,
+                        #signupFunnel,
+                        #acquisitionTrend {
+                            height: 100px !important;
+                        }
+
+                        /* Keep leaderboard table tidy */
+                        .leaderboard-table {
+                            max-height: 200px;
+                            overflow-y: auto;
+                        }
+
+                        /* Align filter/search in header for leaderboard */
+                        .leaderboard-filters {
+                            display: flex;
+                            align-items: center;
+                            gap: 0.5rem;
+                        }
+
+                        .leaderboard-filters input,
+                        .leaderboard-filters select {
+                            height: 28px;
+                            font-size: 0.8rem;
+                        }
+                    </style>
+
+                    <!-- ======= FUNNEL SECTION ======= -->
+                    <div class="row g-4 mt-2 mb-4">
+                        <!-- A. Referral Funnel Graph -->
+                        <div class="col-lg-6">
+                            <div class="card dashboard-card">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Referral Funnel</h5>
+                                    <div>
+                                        <select class="form-select form-select-sm d-inline w-auto me-2">
+                                            <option>Date Range</option>
+                                            <option>Last 7 Days</option>
+                                            <option>Last 30 Days</option>
+                                        </select>
+                                        <select class="form-select form-select-sm d-inline w-auto">
+                                            <option>Community</option>
+                                            <option>Partner Type A</option>
+                                            <option>Partner Type B</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="dashboard-body">
+                                    <div id="referralFunnel"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- B. Signup Flow Funnel -->
+                        <div class="col-lg-6">
+                            <div class="card dashboard-card">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Signup Flow Funnel</h5>
+                                    <select class="form-select form-select-sm w-auto">
+                                        <option>All Channels</option>
+                                        <option>Organic</option>
+                                        <option>Paid</option>
+                                        <option>Referral</option>
+                                    </select>
+                                </div>
+                                <div class="dashboard-body">
+                                    <div id="signupFunnel"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ======= ACQUISITION + REFERRAL SECTION ======= -->
+                    <div class="row g-4 mb-4">
+                        <!-- Acquisition Channels Graph -->
+                        <div class="col-lg-6">
+                            <div class="card dashboard-card">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Acquisition Channels</h5>
+                                    <div class="d-flex align-items-center">
+                                        <div class="form-check form-switch me-2">
+                                            <!-- <input class="form-check-input" type="checkbox" id="toggleCostMetrics">
+                                            <label class="form-check-label small" for="toggleCostMetrics">Show Cost
+                                                Metrics</label> -->
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="dashboard-body">
+                                    <div id="acquisitionTrend"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Referral Leaderboard -->
+                        <div class="col-lg-6">
+                            <div class="card dashboard-card">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center flex-wrap">
+                                    <h5 class="card-title mb-0 me-3">Referral Leaderboard</h5>
+
+                                    <!-- Filters & Search moved to header -->
+                                    <div class="leaderboard-filters flex-grow-1 justify-content-end">
+                                        <input id="refSearch" type="text" class="form-control form-control-sm w-auto"
+                                            placeholder="Search...">
+                                        <select id="refRole" class="form-select form-select-sm w-auto">
+                                            <option>All Roles</option>
+                                            <option>Users</option>
+                                            <option>Partners</option>
+                                        </select>
+                                        <select id="refRange" class="form-select form-select-sm w-auto">
+                                            <option>Last 7 Days</option>
+                                            <option>Last 30 Days</option>
+                                            <option>All Time</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="dashboard-body">
+                                    <!-- Dynamic height: table scrolls, header fixed -->
+                                    <div class="table-responsive" style="max-height: 50vh; overflow-y: auto;">
+                                        <table class="table table-sm table-striped align-middle mb-0">
+                                            <thead class="table-light" style="position: sticky; top: 0; z-index: 5;">
+                                                <tr>
+                                                    <th>Rank</th>
+                                                    <th>Name</th>
+                                                    <th>Role</th>
+                                                    <th>Referrals Sent</th>
+                                                    <th>Activated</th>
+                                                    <th>Linked Partners</th>
+                                                    <th>CPS</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+                                                <% leaderboard.forEach((row, index)=> { %>
+                                                    <tr>
+                                                        <td>
+                                                            <% if (index===0) { %>
+                                                                <i class="bi bi-1-circle-fill"
+                                                                    style="color:#ffc107;"></i>
+                                                                <% } else if (index===1) { %>
+                                                                    <i class="bi bi-2-circle-fill"
+                                                                        style="color:#adadad;"></i>
+                                                                    <% } else if (index===2) { %>
+                                                                        <i class="bi bi-3-circle-fill"
+                                                                            style="color:#9e5e29;"></i>
+                                                                        <% } else { %>
+                                                                            <%= index + 1 %>
+                                                                                <% } %>
+                                                        </td>
+
+                                                        <td>
+                                                            <%= row.full_name %>
+                                                        </td>
+
+                                                        <td>
+                                                            <% if (row.role==="partner" ) { %>
+                                                                <span class="badge bg-success">Partner</span>
+                                                                <% } else { %>
+                                                                    <span class="badge bg-primary">User</span>
+                                                                    <% } %>
+                                                        </td>
+
+                                                        <td>
+                                                            <%= row.referrals_sent %>
+                                                        </td>
+                                                        <td>
+                                                            <%= row.activated_count %>
+                                                        </td>
+                                                        <td>
+                                                            <%= row.linked_partners %>
+                                                        </td>
+                                                        <td>₹<%= row.cps %>
+                                                        </td>
+                                                    </tr>
+                                                    <% }) %>
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!-- ======= CHART SCRIPTS ======= -->
+                    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+                    <script>
+                        // ---------- Referral Funnel ----------
+                        // ---------- Referral Funnel ----------
+                        var referralFunnelOptions = {
+                            chart: { type: 'bar', height: 180 },
+                            plotOptions: { bar: { horizontal: true, distributed: true, barHeight: '60%', dataLabels: { position: 'bottom' } } },
+                            colors: ['#007bff', '#28a745', '#ffc107', '#dc3545'],
+                            dataLabels: {
+                                enabled: true,
+                                formatter: (val, opts) => {
+                                    const i = opts.dataPointIndex, d = opts.w.globals.initialSeries[0].data;
+                                    if (i === 0) return val;
+                                    return `${val} (${((val / d[i - 1]) * 100).toFixed(1)}%)`;
+                                },
+                                style: { colors: ['#fff'] }
+                            },
+                            xaxis: { categories: ['Invites Sent', 'Accepted', 'Activated', 'Linked Partner'], labels: { show: false } },
+                            tooltip: {
+                                y: {
+                                    formatter: (val, opts) => {
+                                        const i = opts.dataPointIndex, d = opts.w.globals.initialSeries[0].data;
+                                        if (i === 0) return `${val} total`;
+                                        const drop = d[i - 1] - val, dropPct = ((drop / d[i - 1]) * 100).toFixed(1);
+                                        return `${val} (Drop-off: ${drop} | ${dropPct}%)`;
+                                    }
+                                }
+                            },
+
+                            series: [{
+                                name: 'Users',
+                                data: [
+                                    <%= stats.invitesSent %>,
+                                    <%= stats.accepted %>,
+                                    <%= stats.activated %>,
+                                    <%= stats.userLinked %>
+                                    ],
+                            }]
+                        };
+
+                        new ApexCharts(document.querySelector("#referralFunnel"), referralFunnelOptions).render();
+
+                        // ---------- Signup Flow Funnel ----------
+                        var signupFunnelOptions = {
+                            chart: { type: 'bar', height: 180 },
+                            plotOptions: { bar: { horizontal: true, distributed: true, barHeight: '60%' } },
+                            colors: ['#17a2b8', '#6f42c1', '#fd7e14', '#20c997'],
+                            dataLabels: {
+                                enabled: true,
+                                formatter: (val, opts) => {
+                                    const i = opts.dataPointIndex, d = opts.w.globals.initialSeries[0].data;
+                                    if (i === 0) return val;
+                                    return `${val} (${((val / d[i - 1]) * 100).toFixed(1)}%)`;
+                                },
+                                style: { colors: ['#fff'] }
+                            },
+                            xaxis: { categories: ['Landing', 'Sign-up', 'Onboarding Complete', 'First Log'], labels: { show: false } },
+                            tooltip: {
+                                y: {
+                                    formatter: (val, opts) => {
+                                        const i = opts.dataPointIndex, d = opts.w.globals.initialSeries[0].data;
+                                        if (i === 0) return `${val} total`;
+                                        const drop = d[i - 1] - val, dropPct = ((drop / d[i - 1]) * 100).toFixed(1);
+                                        return `${val} (Drop-off: ${drop} | ${dropPct}%)`;
+                                    }
+                                }
+                            },
+                            series: [{
+                                name: 'Users', data: [
+    <%= stats.landing %>,
+    <%= stats.signup %>,
+    <%= stats.onboarding %>,
+    <%= stats.firstLog %>
+]
+                            }]
+                        };
+                        new ApexCharts(document.querySelector("#signupFunnel"), signupFunnelOptions).render();
+
+                        // ---------- Acquisition Channels (Trend Only) ----------
+                        var acquisitionTrend = {
+                            chart: { type: 'line', height: 180, toolbar: { show: false } },
+                            series: [
+                                { name: 'Organic', data: [120, 140, 150, 160, 155, 170, 180] },
+                                { name: 'Referrals', data: [80, 95, 100, 110, 120, 130, 140] },
+                                { name: 'Ads', data: [60, 75, 85, 95, 100, 110, 115] }
+                            ],
+                            colors: ['#28a745', '#007bff', '#fd7e14'],
+                            xaxis: { categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'] },
+                            yaxis: { title: { text: 'Conversions' } },
+                            tooltip: { shared: true, intersect: false }
+                        };
+                        var trendChart = new ApexCharts(document.querySelector("#acquisitionTrend"), acquisitionTrend);
+                        trendChart.render();
+
+                        // ---------- Toggle Cost Metrics ----------
+                        document.querySelector('#toggleCostMetrics').addEventListener('change', function (e) {
+                            if (e.target.checked) {
+                                trendChart.updateSeries([
+                                    { name: 'CAC (₹)', data: [120, 115, 118, 112, 110, 108, 105] },
+                                    { name: 'Ad Spend (K₹)', data: [20, 22, 25, 23, 21, 19, 18] }
+                                ]);
+                            } else {
+                                trendChart.updateSeries([
+                                    { name: 'Organic', data: [120, 140, 150, 160, 155, 170, 180] },
+                                    { name: 'Referrals', data: [80, 95, 100, 110, 120, 130, 140] },
+                                    { name: 'Ads', data: [60, 75, 85, 95, 100, 110, 115] }
+                                ]);
+                            }
+                        });
+                    </script>
+
+                    <!-- ======= PROMO / COMMUNITY CODES SECTION ======= -->
+                    <div class="row g-4 mb-4">
+
+                        <!-- Create New Code Card -->
+                        <div class="col-lg-6">
+                            <div class="card dashboard-card">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Create Promo / Community Code</h5>
+                                </div>
+
+                                <div class="dashboard-body">
+                                    <form>
+                                        <!-- Row 1: Code Name + Generate -->
+                                        <div class="row g-2 align-items-end mb-3">
+                                            <div class="col-8">
+                                                <label class="form-label small mb-1">Code Name</label>
+                                                <input type="text" id="promoCodeInput"
+                                                    class="form-control form-control-sm"
+                                                    placeholder="Enter or generate code...">
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <button type="button" id="generateCodeBtn"
+                                                    class="btn btn-sm btn-outline-primary w-100">
+                                                    <i class="bi bi-shuffle me-1"></i>Generate
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <!-- Row 2: Expiration + Max Uses + Action Buttons -->
+                                        <div class="row g-2 align-items-end">
+                                            <div class="col-5">
+                                                <label class="form-label small mb-1">Expiration Date</label>
+                                                <input type="date" class="form-control form-control-sm">
+                                            </div>
+                                            <div class="col-3">
+                                                <label class="form-label small mb-1">Max Uses</label>
+                                                <input type="number" class="form-control form-control-sm"
+                                                    placeholder="e.g. 100">
+                                            </div>
+                                            <div class="col-4 text-end">
+                                                <button type="reset"
+                                                    class="btn btn-sm btn-outline-secondary me-2">Clear</button>
+                                                <button type="submit" class="btn btn-sm btn-primary">Create</button>
+                                            </div>
+                                        </div>
+                                    </form>
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Existing Codes Table -->
+                        <div class="col-lg-6">
+                            <div class="card dashboard-card">
+                                <div
+                                    class="card-header dashboard-header d-flex justify-content-between align-items-center">
+                                    <h5 class="card-title mb-0">Existing Codes</h5>
+                                    <div>
+                                        <select class="form-select form-select-sm w-auto">
+                                            <option>All</option>
+                                            <option>Active</option>
+                                            <option>Expired</option>
+                                            <option>Expiring Soon</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="dashboard-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-sm table-striped align-middle mb-0">
+                                            <thead class="table-light">
+                                                <tr>
+                                                    <th>Code</th>
+                                                    <th>Expiration</th>
+                                                    <th>Uses</th>
+                                                    <th>Status</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>COMMUNITY25</td>
+                                                    <td>2025-12-31</td>
+                                                    <td>142</td>
+                                                    <td><span class="badge bg-success">Active</span></td>
+                                                </tr>
+                                                <tr>
+                                                    <td>PROMO50</td>
+                                                    <td>2025-11-20</td>
+                                                    <td>89</td>
+                                                    <td><span class="badge bg-warning text-dark">Expiring Soon</span>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>SUMMER10</td>
+                                                    <td>2025-08-01</td>
+                                                    <td>300</td>
+                                                    <td><span class="badge bg-secondary">Expired</span></td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+
+
+                    <!-- /.row (main row) -->
+                </div>
+                <!--end::Container-->
+            </div>
+            <!--end::App Content-->
+        </main>
+
+        <!-- Generate code -->
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                const input = document.getElementById("promoCodeInput");
+                const generateBtn = document.getElementById("generateCodeBtn");
+
+                generateBtn.addEventListener("click", function () {
+                    // Prefix list (you can customize)
+                    const prefixes = ["PROMO", "COMMU", "DEAL", "SAVE", "OFFER", "SUMM"];
+                    const prefix = prefixes[Math.floor(Math.random() * prefixes.length)];
+
+                    // Generate 4–digit alphanumeric code
+                    const randomPart = Math.random().toString(36).substring(2, 8).toUpperCase();
+
+                    // Combine
+                    const code = `${prefix}-${randomPart}`;
+
+                    // Set it to input
+                    input.value = code;
+
+                    // Optional: add small visual feedback
+                    input.classList.add("border-success");
+                    setTimeout(() => input.classList.remove("border-success"), 600);
+                });
+            });
+
+
+        </script>
+
+        <script>
+            document.addEventListener("DOMContentLoaded", () => {
+
+                const searchInput = document.getElementById("refSearch");
+                const roleSelect = document.getElementById("refRole");
+                const rangeSelect = document.getElementById("refRange");
+
+                const rows = document.querySelectorAll("tbody tr");
+
+                function applyFilters() {
+                    const searchValue = searchInput.value.toLowerCase();
+                    const roleValue = roleSelect.value;
+                    const rangeValue = rangeSelect.value;
+
+                    const now = new Date();
+
+                    rows.forEach(row => {
+                        const name = row.cells[1].textContent.toLowerCase();
+                        const role = row.cells[2].textContent.trim().toLowerCase();
+                        const referralCount = parseInt(row.cells[3].textContent, 10) || 0;
+
+                        let visible = true;
+
+
+                        if (!name.includes(searchValue)) {
+                            visible = false;
+                        }
+
+
+                        if (roleValue === "Users" && role !== "user") {
+                            visible = false;
+                        }
+                        if (roleValue === "Partners" && role !== "partner") {
+                            visible = false;
+                        }
+
+
+                        if (rangeValue === "Last 7 Days" && referralCount === 0) {
+                            visible = false;
+                        }
+                        if (rangeValue === "Last 30 Days" && referralCount === 0) {
+                            visible = false;
+                        }
+
+
+                        row.style.display = visible ? "" : "none";
+                    });
+                }
+
+                searchInput.addEventListener("keyup", applyFilters);
+                roleSelect.addEventListener("change", applyFilters);
+                rangeSelect.addEventListener("change", applyFilters);
+
+            });
+        </script>
+
+        <%- include("../components/adminFooter") %>
