@@ -24,12 +24,14 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://www.hercompassai.com"
+];
+
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://www.hercompassai.com/"
-    ],
+    origin: allowedOrigins,
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept", "X-Requested-With"],
     exposedHeaders: ["Content-Length"],
@@ -37,8 +39,11 @@ app.use(
   })
 );
 
+app.options("*", cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 
-app.options("*", cors());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
