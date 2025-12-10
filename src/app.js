@@ -28,7 +28,7 @@ app.use(
   cors({
     origin: [
       "http://localhost:3000",
-      "https://progressive-hercompass.vercel.app"
+      "http://hercompassai.com"
     ],
     methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
     allowedHeaders: ["Content-Type", "Authorization", "Accept", "X-Requested-With"],
