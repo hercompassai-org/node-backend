@@ -100,7 +100,7 @@
 
                 async function loadAdmins() {
                     try {
-                        const res = await fetch("http://localhost:5000/api/admins");
+                        const res = await fetch("/api/admins");
                         const data = await res.json();
                         if (!data.success || !data.data.length) {
                             tableBody.innerHTML = `<tr><td colspan="6" class="text-center text-muted">No admin users found.</td></tr>`;
@@ -145,7 +145,7 @@
                     // Edit
                     if (e.target.closest(".editBtn")) {
                         try {
-                            const res = await fetch(`http://localhost:5000/api/admins/${adminId}`);
+                            const res = await fetch(`/api/admins/${adminId}`);
                             const data = await res.json();
                             if (!data.success) return alert("User not found");
                             const admin = data.admin;
@@ -163,7 +163,7 @@
                     if (e.target.closest(".deleteBtn")) {
                         if (!confirm("Are you sure you want to delete this admin?")) return;
                         try {
-                            const res = await fetch(`http://localhost:5000/api/admins/delete/${adminId}`, {
+                            const res = await fetch(`/api/admins/delete/${adminId}`, {
                                 method: "GET"
                             });
                             const data = await res.json();
@@ -189,8 +189,8 @@
 
                     try {
                         const url = id
-                            ? `http://localhost:5000/api/admins/update/${id}`
-                            : `http://localhost:5000/api/admins/add`;
+                            ? `/api/admins/update/${id}`
+                            : `/api/admins/add`;
                             const method = id ? "PUT" : "POST";
                         const res = await fetch(url, {
                             method,
