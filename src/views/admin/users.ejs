@@ -226,7 +226,7 @@
                 const tableBody = document.getElementById("regularUsersTableBody");
 
                 try {
-                    const res = await fetch("api/users/regulars");
+                    const res = await fetch("/api/users/regulars");
                     const data = await res.json();
 
                     if (!data.success || !data.data.length) {
