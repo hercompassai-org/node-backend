@@ -11,14 +11,18 @@ import { v4 as uuidv4 } from "uuid";
 import axios from "axios";
 
 /**
- * Helper: call OpenAI for digest generation
+ * -------------------------------------------------------
+ *  Helper: call OpenAI (auto-detect model)
+ * -------------------------------------------------------
  */
 const callOpenAI = async (messages) => {
   const API_KEY = process.env.OPENAI_API_KEY;
-  const model = process.env.OPENAI_MODEL || "gpt-4.1";
-  if (!API_KEY) throw new Error("OPENAI_API_KEY missing");
+  const model = "gpt-5.1-mini";
+
+  if (!API_KEY) throw new Error("❌ OPENAI_API_KEY missing");
 
   const url = "https://api.openai.com/v1/chat/completions";
+
   const payload = {
     model,
     messages,
@@ -30,12 +34,14 @@ const callOpenAI = async (messages) => {
     "Content-Type": "application/json",
   };
 
-  const resp = await axios.post(url, payload, { headers, timeout: 20000 });
+  const resp = await axios.post(url, payload, { headers, timeout: 25000 });
   return resp.data;
 };
 
 /**
- * Build summary for last 7 days
+ * -------------------------------------------------------
+ *  Build 7-day summary for a user
+ * -------------------------------------------------------
  */
 const buildSummaryForUser = async (userId) => {
   const since = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
@@ -49,9 +55,10 @@ const buildSummaryForUser = async (userId) => {
   });
 
   const moods = logs.map((l) => Number(l.mood)).filter(Boolean);
-  const avgMood = moods.length ? (moods.reduce((a, b) => a + b, 0) / moods.length).toFixed(2) : null;
-
-  const notes = logs.slice(-3).map((l) => l.notes).filter(Boolean);
+  const avgMood =
+    moods.length ?
+    (moods.reduce((a, b) => a + b, 0) / moods.length).toFixed(2)
+    : null;
 
   const latestPredict = await PredictiveLog.findOne({
     where: { user_id: userId },
@@ -61,148 +68,184 @@ const buildSummaryForUser = async (userId) => {
   return {
     period: { from: since.toISOString(), to: new Date().toISOString() },
     avg_mood: avgMood,
-    recent_notes: notes,
-    predictive_snapshot: latestPredict?.predicted_symptoms || null,
     logs_count: logs.length,
+    recent_notes: logs.slice(-3).map((l) => l.notes).filter(Boolean),
     recent_logs: logs.slice(-6).map((l) => ({
       date: l.log_date,
       mood: l.mood,
-      sleep_hours: l.sleep_hours,
       energy_level: l.energy_level,
+      sleep_hours: l.sleep_hours,
       symptoms: l.symptoms,
       notes: l.notes,
     })),
+    predictive_snapshot: latestPredict?.predicted_symptoms || null,
   };
 };
 
 /**
- * Use OpenAI to build partner-friendly digest (JSON)
- * returns object: { partner_summary, academy_lesson, do_dont, partner_one_liner }
+ * -------------------------------------------------------
+ *  Use OpenAI to build partner-friendly digest (JSON)
+ * -------------------------------------------------------
  */
 const generatePartnerDigest = async (user, summary) => {
   const system = {
     role: "system",
-    content:
-      "You are a compassionate assistant that converts weekly user data into a short partner-friendly summary, a 1-paragraph Men’s Academy lesson, a 3-item do/don't list, and an encouraging one-liner. Return only JSON.",
+    content: `
+You convert weekly logs into:
+
+- partner_summary (short)
+- academy_lesson (1 paragraph)
+- do_dont (array of 3)
+- partner_one_liner
+
+Return ONLY JSON. No markdown.
+    `,
   };
 
   const userMsg = {
     role: "user",
-    content: `USER: ${JSON.stringify({ id: user.id, age: user.age, menopause_phase: user.menopause_phase })}
-WEEK_SUMMARY: ${JSON.stringify(summary)}
-Return JSON with keys: partner_summary, academy_lesson, do_dont (array of strings), partner_one_liner. Keep it short and practical.`,
+    content: JSON.stringify({
+      user: {
+        id: user.id,
+        age: user.age,
+        menopause_phase: user.menopause_phase,
+      },
+      week_summary: summary,
+    }),
   };
 
   try {
-    const aiResp = await callOpenAI([system, userMsg], 700, 0.2);
-    const assistantText = aiResp.choices?.[0]?.message?.content;
-    if (!assistantText) throw new Error("Empty AI response");
-    let jsonText = assistantText.trim();
-    if (jsonText.startsWith("```")) {
-      const parts = jsonText.split("```");
-      jsonText = parts.filter(Boolean).slice(-1)[0] || jsonText;
+    const aiResp = await callOpenAI([system, userMsg]);
+    let text = aiResp.choices?.[0]?.message?.content?.trim();
+
+    // strip accidental code fences
+    if (text.startsWith("```")) {
+      text = text.replace(/```json|```/g, "");
     }
-    const first = jsonText.indexOf("{");
-    const last = jsonText.lastIndexOf("}");
-    if (first >= 0 && last > first) jsonText = jsonText.slice(first, last + 1);
-    const parsed = JSON.parse(jsonText);
-    return parsed;
-  } catch (err) {
-    console.warn("Partner digest AI failed:", err.message || err);
+
+    return JSON.parse(text);
+  } catch (e) {
+    console.warn("Digest AI failed → fallback used");
+
     return {
-      partner_summary: summary.recent_notes?.length
-        ? `Mood lower this week. Key symptom: ${summary.recent_logs?.[summary.recent_logs.length - 1]?.symptoms || "reported symptoms"}.`
-        : "No significant updates this week.",
-      academy_lesson: "Short, consistent routines (sleep window, light evening activity) help.",
+      partner_summary: "She had a mixed week. Keep things calm and supportive.",
+      academy_lesson: "Hormonal shifts can change mood, sleep, and stress tolerance.",
       do_dont: [
-        "Do: Encourage calm evening activities",
-        "Don't: Bring up stressful topics late at night",
-        "Do: Help with nutritious dinners",
+        "Do: Offer calm support",
+        "Don't: Push heavy conversations",
+        "Do: Help with evening routines",
       ],
-      partner_one_liner: "A little calm support this week can really help.",
+      partner_one_liner: "Small empathy = big impact this week.",
     };
   }
 };
 
 /**
- * runDigestForUser - builds summary, optionally calls AI, sends or previews digest
+ * -------------------------------------------------------
+ *  MAIN ENGINE: runDigestForUser()
+ * -------------------------------------------------------
  */
-export const runDigestForUser = async (userId, partnerId, sharedFields = [], opts = { preview: true }) => {
-  // check consent
-  const share = await PartnerShare.findOne({ where: { user_id: userId, partner_id: partnerId } });
+export const runDigestForUser = async (
+  userId,
+  partnerId,
+  sharedFields = [],
+  opts = { preview: true }
+) => {
+  const share = await PartnerShare.findOne({
+    where: { user_id: userId, partner_id: partnerId },
+  });
+
   if (!share || !share.consent) {
-    throw new Error("No consent for this partner");
+    throw new Error("❌ No consent for this partner");
   }
 
   const user = await User.findByPk(userId);
   const summary = await buildSummaryForUser(userId);
 
-  // attempt to generate partner-friendly digest via AI
   let aiDigest = null;
   try {
     aiDigest = await generatePartnerDigest(user, summary);
-  } catch (err) {
-    console.warn("generatePartnerDigest failed:", err.message || err);
+  } catch (e) {
     aiDigest = null;
   }
 
-  // build html (simple)
+  /**
+   * -----------------------------
+   * Build Email HTML
+   * -----------------------------
+   */
   let emailHtml = `
-    <h3>HerCompass — Weekly Digest</h3>
-    <p>Period: ${summary.period.from.slice(0, 10)} → ${summary.period.to.slice(0, 10)}</p>
+    <h2>HerCompass — Weekly Digest</h2>
+    <p><strong>Period:</strong> ${summary.period.from.slice(0, 10)} → ${
+    summary.period.to.slice(0, 10)
+  }</p>
   `;
 
   if (sharedFields.includes("mood_trend")) {
-    emailHtml += `<p><strong>Average Mood:</strong> ${summary.avg_mood ?? "N/A"}</p>`;
+    emailHtml += `<p><strong>Average Mood:</strong> ${summary.avg_mood || "N/A"}</p>`;
   }
 
-  if (sharedFields.includes("notes") && summary.recent_notes?.length) {
+  if (sharedFields.includes("notes") && summary.recent_notes.length) {
     emailHtml += `<p><strong>Recent Note:</strong> "${summary.recent_notes[0]}"</p>`;
   }
 
   if (sharedFields.includes("ai_prediction") && summary.predictive_snapshot) {
-    emailHtml += `<h4>AI Prediction Snapshot</h4><pre>${JSON.stringify(summary.predictive_snapshot, null, 2)}</pre>`;
+    emailHtml += `<h4>AI Symptom Prediction</h4><pre>${JSON.stringify(
+      summary.predictive_snapshot,
+      null,
+      2
+    )}</pre>`;
   }
 
-  // insert AI partner-friendly sections if available
+  // AI sections
   if (aiDigest) {
     if (sharedFields.includes("partner_summary") || sharedFields.length === 0) {
       emailHtml += `<hr/><h4>Partner Summary</h4><p>${aiDigest.partner_summary}</p>`;
     }
     if (sharedFields.includes("academy_lesson")) {
-      emailHtml += `<h4>Men's Academy — Quick Lesson</h4><p>${aiDigest.academy_lesson}</p>`;
+      emailHtml += `<h4>Men’s Academy</h4><p>${aiDigest.academy_lesson}</p>`;
     }
     if (sharedFields.includes("do_dont")) {
-      emailHtml += `<h4>Do / Don't</h4><ul>${(aiDigest.do_dont || []).map((d) => `<li>${d}</li>`).join("")}</ul>`;
+      emailHtml += `<h4>Do / Don’t</h4><ul>${aiDigest.do_dont
+        .map((d) => `<li>${d}</li>`)
+        .join("")}</ul>`;
     }
   }
 
   emailHtml += `
     <hr/>
-    <p><strong>Recommended Actions (generic):</strong></p>
+    <p><strong>General Recommendations:</strong></p>
     <ul>
-      <li>Maintain consistent sleep routine</li>
-      <li>Short afternoon walks to boost energy</li>
+      <li>Maintain a consistent sleep window</li>
+      <li>Light movement in the afternoon</li>
     </ul>
   `;
 
-  // preview -> return JSON and html
+  /**
+   * -----------------------------
+   * PREVIEW MODE
+   * -----------------------------
+   */
   if (opts.preview) {
     return {
       summary: {
         ...summary,
         avg_mood: sharedFields.includes("mood_trend") ? summary.avg_mood : null,
         recent_notes: sharedFields.includes("notes") ? summary.recent_notes : [],
-        predictive_snapshot: sharedFields.includes("ai_prediction") ? summary.predictive_snapshot : null,
+        predictive_snapshot: sharedFields.includes("ai_prediction")
+          ? summary.predictive_snapshot
+          : null,
         partner_digest: aiDigest ? aiDigest.partner_summary : null,
-        academy_lesson: aiDigest ? aiDigest.academy_lesson : null,
-        do_dont: aiDigest ? aiDigest.do_dont : [],
       },
       emailHtml,
     };
   }
 
-  // SEND MODE: persist digest and email
+  /**
+   * -----------------------------
+   * SEND MODE
+   * -----------------------------
+   */
   const digestId = uuidv4();
   const digestEntry = await DigestLog.create({
     id: digestId,
@@ -214,10 +257,10 @@ export const runDigestForUser = async (userId, partnerId, sharedFields = [], opt
   });
 
   const partner = await User.findByPk(partnerId);
-  if (!partner || !partner.email) throw new Error("Partner email missing");
+  if (!partner?.email) throw new Error("Partner missing email");
 
   try {
-    const info = await transporter.sendMail({
+    await transporter.sendMail({
       from: process.env.EMAIL_USER,
       to: partner.email,
       subject: "HerCompass Weekly Digest",
@@ -229,36 +272,44 @@ export const runDigestForUser = async (userId, partnerId, sharedFields = [], opt
       action: "digest_sent",
       target_table: "digest_logs",
       target_id: digestEntry.id,
-      ip_address: "0.0.0.0",
     });
 
-    return { success: true, digestId, info };
+    return { success: true, digestId };
   } catch (err) {
     await AuditLog.create({
       actor_id: userId,
       action: "digest_send_failed",
       target_table: "digest_logs",
       target_id: digestEntry.id,
-      ip_address: "0.0.0.0",
     });
     throw err;
   }
 };
 
 /**
- * Weekly Cron
+ * -------------------------------------------------------
+ *  Weekly Cron
+ * -------------------------------------------------------
  */
 export const runWeeklyDigestForAllUsers = async () => {
   const shares = await PartnerShare.findAll({ where: { consent: true } });
+
   const results = [];
+
   for (const s of shares) {
     try {
-      const result = await runDigestForUser(s.user_id, s.partner_id, s.shared_fields, { preview: false });
-      results.push({ share: s.id, ok: true, result });
+      const result = await runDigestForUser(
+        s.user_id,
+        s.partner_id,
+        s.shared_fields,
+        { preview: false }
+      );
+      results.push({ share_id: s.id, ok: true, result });
     } catch (err) {
-      results.push({ share: s.id, ok: false, error: err.message });
+      results.push({ share_id: s.id, ok: false, error: err.message });
     }
   }
+
   return results;
 };
 
