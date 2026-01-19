@@ -184,66 +184,66 @@ export const getUserDashboard = async (req, res) => {
 
 export const getUserInsights = async (req, res) => {
   try {
-    const userId = req.params.id === "me" && req.user ? req.user.id : req.params.id;
+    const userId =
+      req.params.id === "me" && req.user
+        ? req.user.id
+        : req.params.id;
 
     if (!userId) {
-      return res.status(400).json({ success: false, message: "User ID required" });
-    }
-    const since = new Date(Date.now() - 14 * 24 * 60 * 60 * 1000);
-
-    const logs = await SymptomLog.findAll({
-      where: { user_id: userId, log_date: { [Op.gte]: since } },
-      order: [["log_date", "ASC"]],
-    });
-
-    let correlationInsight = null;
-
-    if (logs.length >= 2) {
-      const first = logs[0];
-      const last = logs[logs.length - 1];
-
-      if (first.sleep_hours > last.sleep_hours) {
-        const drop = first.sleep_hours - last.sleep_hours;
-        correlationInsight = `Reduced sleep by ${drop.toFixed(
-          1
-        )} hrs appears linked with lower mood.`;
-      }
-
-
-      if (last.symptoms?.includes("Fatigue")) {
-        correlationInsight = `Recurring fatigue detected — energy level trending lower after active days.`;
-      }
+      return res.status(400).json({
+        success: false,
+        message: "User ID required",
+      });
     }
 
-
+    // ---- Latest AI Prediction ----
     const latestPredict = await PredictiveLog.findOne({
       where: { user_id: userId },
       order: [["created_at", "DESC"]],
     });
 
-    let predictiveInsight = null;
-
-    if (latestPredict?.predicted_symptoms) {
-      const p = latestPredict.predicted_symptoms;
-
-      if (p.hot_flashes > 1.2) {
-        predictiveInsight = `Hot flash risk increasing — consider adding cooling breaths or shorter evening workouts.`;
-      } else if (p.fatigue_probability > 1.0) {
-        predictiveInsight = `Fatigue likelihood high — energy dips expected in the next few days.`;
-      } else {
-        predictiveInsight = `Overall symptom risk stable — good balance maintained this week.`;
-      }
+    if (!latestPredict || !latestPredict.predicted_symptoms) {
+      return res.json({
+        success: true,
+        insights: {
+          correlationInsight: null,
+          predictiveInsight: null,
+        },
+      });
     }
+
+    const ai = latestPredict.predicted_symptoms;
+
+    // ---- AI-powered insights ----
+    const correlationInsight = ai.likely_symptoms?.length
+      ? `Recurring patterns detected involving ${ai.likely_symptoms.join(
+          ", "
+        )}.`
+      : null;
+
+    const predictiveInsight = `
+Risk level: ${ai.risk_level.toUpperCase()}.
+
+Nutrition focus:
+${ai.nutrition_tip}
+
+Movement suggestion:
+${ai.movement_tip}
+    `.trim();
 
     return res.json({
       success: true,
       insights: {
         correlationInsight,
         predictiveInsight,
+        partnerSummary: ai.partner_summary,
       },
     });
   } catch (err) {
     console.error("Insights error:", err);
-    return res.status(500).json({ success: false, message: "Server error" });
+    return res.status(500).json({
+      success: false,
+      message: "Server error",
+    });
   }
 };
