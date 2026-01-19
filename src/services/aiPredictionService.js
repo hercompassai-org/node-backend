@@ -91,7 +91,7 @@ Based on menopause patterns, return JSON exactly in this format:
 
   const response = await openai.responses.create({
     model: "gpt-5-mini",
-    temperature: 0.3,
+
     input: [
       { role: "system", content: systemPrompt },
       { role: "user", content: userPrompt },
