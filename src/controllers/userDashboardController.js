@@ -159,10 +159,10 @@ export const getUserDashboard = async (req, res) => {
         predictiveSnapshot: latestPredict ? latestPredict.predicted_symptoms : null,
         predictiveMeta: latestPredict
           ? {
-              model_version: latestPredict.model_version,
-              confidence: latestPredict.confidence,
-              created_at: latestPredict.created_at,
-            }
+            model_version: latestPredict.model_version,
+            confidence: latestPredict.confidence,
+            created_at: latestPredict.created_at,
+          }
           : null,
         digitalTwinScenarios: scenarios.map((s) => ({
           id: s.id,
@@ -208,35 +208,45 @@ export const getUserInsights = async (req, res) => {
         insights: {
           correlationInsight: null,
           predictiveInsight: null,
+          nutritionInsights: null,
+          partnerSummary: null,
         },
       });
     }
 
     const ai = latestPredict.predicted_symptoms;
 
-    // ---- AI-powered insights ----
+    // ---- Correlation Insight (AI-driven) ----
     const correlationInsight = ai.likely_symptoms?.length
       ? `Recurring patterns detected involving ${ai.likely_symptoms.join(
-          ", "
-        )}.`
+        ", "
+      )}.`
       : null;
 
+    // ---- Predictive Insight (AI-driven) ----
     const predictiveInsight = `
-Risk level: ${ai.risk_level.toUpperCase()}.
+Risk level: ${ai.risk_level?.toUpperCase() || "UNKNOWN"}.
 
-Nutrition focus:
-${ai.nutrition_tip}
-
-Movement suggestion:
-${ai.movement_tip}
+${ai.movement_tip || ""}
     `.trim();
+
+    // ---- Nutrition & Recipe (FULLY AI) ----
+    const nutritionInsights = ai.nutrition
+      ? {
+        radar: ai.nutrition.radar || [],
+        summary: ai.nutrition.summary || "",
+        shoppingList: ai.nutrition.shopping_list || [],
+        suggestedRecipe: ai.nutrition.suggested_recipe || null,
+      }
+      : null;
 
     return res.json({
       success: true,
       insights: {
         correlationInsight,
         predictiveInsight,
-        partnerSummary: ai.partner_summary,
+        nutritionInsights,
+        partnerSummary: ai.partner_summary || null,
       },
     });
   } catch (err) {

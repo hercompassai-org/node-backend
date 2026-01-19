@@ -11,7 +11,7 @@ export const runPredictionEngine = async (userId) => {
   const user = await User.findByPk(userId);
   if (!user) return;
 
-  // Last 7 days of logs
+  // ---- Last 7 days of logs ----
   const logs = await SymptomLog.findAll({
     where: { user_id: userId },
     order: [["log_date", "DESC"]],
@@ -20,15 +20,15 @@ export const runPredictionEngine = async (userId) => {
 
   if (!logs.length) return;
 
-  // -------- FEATURE ENGINEERING --------
+  // ---- FEATURE ENGINEERING ----
   const avgSleep =
-    logs.reduce((s, l) => s + (l.sleep_hours || 0), 0) / logs.length;
+    logs.reduce((s, l) => s + Number(l.sleep_hours || 0), 0) / logs.length;
 
   const avgEnergy =
-    logs.reduce((s, l) => s + (l.energy_level || 0), 0) / logs.length;
+    logs.reduce((s, l) => s + Number(l.energy_level || 0), 0) / logs.length;
 
   const symptomCounts = {};
-  logs.forEach(l => {
+  logs.forEach((l) => {
     let parsedSymptoms = [];
 
     if (Array.isArray(l.symptoms)) {
@@ -41,10 +41,9 @@ export const runPredictionEngine = async (userId) => {
       }
     }
 
-    parsedSymptoms.forEach(sym => {
+    parsedSymptoms.forEach((sym) => {
       symptomCounts[sym] = (symptomCounts[sym] || 0) + 1;
     });
-
   });
 
   const featureVector = {
@@ -56,57 +55,56 @@ export const runPredictionEngine = async (userId) => {
     activity_level: user.activity_level,
   };
 
-  // -------- AI PROMPT --------
+  // ---- AI PROMPT ----
   const systemPrompt = `
 You are a women's menopause health prediction model.
-You analyze recent trends and predict likely short-term symptoms.
+You analyze recent symptom patterns and lifestyle data.
 You do NOT diagnose disease.
-You return structured JSON only.
+You provide supportive, evidence-informed guidance.
+You return STRUCTURED JSON ONLY.
 `;
 
   const userPrompt = `
 Feature vector:
 ${JSON.stringify(featureVector, null, 2)}
 
-Based on menopause patterns, predict:
-- Top 3 likely symptoms in next 3–5 days
-- Risk level (low | medium | high)
-- 1 nutrition suggestion
-- 1 gentle movement or calming practice
-- 1 partner-safe supportive sentence (NO symptoms mentioned)
+Based on menopause patterns, return JSON exactly in this format:
 
-Return JSON exactly in this format:
 {
   "likely_symptoms": ["fatigue", "hot_flashes"],
-  "risk_level": "medium",
-  "nutrition_tip": "string",
-  "movement_tip": "string",
-  "partner_summary": "string"
+  "risk_level": "low | medium | high",
+
+  "nutrition": {
+    "radar": ["Magnesium", "Phytoestrogens", "Hydration"],
+    "summary": "Explain why these nutrients matter based on symptoms",
+    "shopping_list": ["Spinach", "Lentils", "Soy yogurt", "Chamomile tea"],
+    "suggested_recipe": {
+      "title": "Recipe name",
+      "benefit": "How this recipe helps current symptoms"
+    }
+  },
+
+  "movement_tip": "One gentle movement or calming practice",
+  "partner_summary": "Supportive sentence safe to share with partner (no symptoms mentioned)"
 }
 `;
 
-const response = await openai.responses.create({
-  model: "gpt-5-mini",
-  input: [
-    {
-      role: "system",
-      content: systemPrompt
-    },
-    {
-      role: "user",
-      content: userPrompt
-    }
-  ]
-});
+  const response = await openai.responses.create({
+    model: "gpt-5-mini",
+    temperature: 0.3,
+    input: [
+      { role: "system", content: systemPrompt },
+      { role: "user", content: userPrompt },
+    ],
+  });
 
-const prediction = JSON.parse(response.output_text);
+  const prediction = JSON.parse(response.output_text);
 
-
-  // -------- SAVE TO predictive_logs --------
+  // ---- SAVE AI OUTPUT ----
   await PredictiveLog.create({
     user_id: userId,
     feature_vector: featureVector,
     predicted_symptoms: prediction,
-    model_version: "v1.0",
+    model_version: "v1.1",
   });
 };
