@@ -7,6 +7,19 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY,
 });
 
+async function generateImageFromPrompt(prompt) {
+  if (!prompt) return null;
+
+  const img = await openai.images.generate({
+    model: "gpt-image-1",
+    prompt,
+    size: "auto"
+  });
+
+  return img?.data?.[0]?.url || null;
+}
+
+
 export const runPredictionEngine = async (userId) => {
   const user = await User.findByPk(userId);
   if (!user) return;
@@ -135,6 +148,19 @@ Do NOT reuse example text verbatim unless it is the best possible recommendation
   });
 
   const prediction = JSON.parse(response.output_text);
+
+if (prediction?.nutrition?.image_prompt) {
+  try {
+    prediction.nutrition.image_url =
+      await generateImageFromPrompt(
+        prediction.nutrition.image_prompt
+      );
+  } catch (e) {
+    console.warn("Image generation failed:", e.message);
+    prediction.nutrition.image_url = null;
+  }
+}
+
 
   // ---- SAVE AI OUTPUT ----
   await PredictiveLog.create({
