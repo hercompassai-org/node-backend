@@ -56,7 +56,12 @@ export const runPredictionEngine = async (userId) => {
   };
 
   // ---- AI PROMPT ----
-  const systemPrompt = `
+const systemPrompt = `
+IMPORTANT:
+All example values in the prompt are placeholders.
+Generate ORIGINAL, context-aware values derived from the feature vector.
+Do NOT reuse example phrases verbatim unless they are clearly the best clinical fit.
+
 You are a women's menopause health prediction model.
 You analyze recent symptom patterns and lifestyle data.
 You do NOT diagnose disease.
@@ -64,11 +69,14 @@ You provide supportive, evidence-informed guidance.
 You return STRUCTURED JSON ONLY.
 `;
 
+
   const userPrompt = `
 Feature vector:
 ${JSON.stringify(featureVector, null, 2)}
 
-Based on menopause patterns, return JSON exactly in this format:
+Based on menopause patterns, return JSON that matches this SCHEMA.
+Values must be dynamically generated from the feature vector.
+Do NOT reuse example text verbatim unless it is the best possible recommendation:
 
 {
   "likely_symptoms": ["fatigue", "hot_flashes"],
