@@ -84,7 +84,23 @@ Based on menopause patterns, return JSON exactly in this format:
     }
   },
 
-  "movement_tip": "One gentle movement or calming practice",
+   "movement": {
+    "tonight": {
+      "title": "10-minute evening meditation",
+      "description": "Calming guided practice to support sleep and nervous system recovery",
+      "duration": "10 min",
+      "type": "meditation | yoga | walking | mobility"
+    },
+    "routine": {
+      "title": "Gentle weekly movement plan",
+      "description": "Low-impact movement supporting energy, mood and sleep"
+    },
+    "couple_mode": {
+      "challenge": "Walk together 3x this week",
+      "benefit": "Encourages connection and gentle activity"
+    }
+  },
+
   "partner_summary": "Supportive sentence safe to share with partner (no symptoms mentioned)"
 }
 `;

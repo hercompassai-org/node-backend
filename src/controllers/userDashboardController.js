@@ -196,7 +196,6 @@ export const getUserInsights = async (req, res) => {
       });
     }
 
-    // ---- Latest AI Prediction ----
     const latestPredict = await PredictiveLog.findOne({
       where: { user_id: userId },
       order: [["created_at", "DESC"]],
@@ -216,21 +215,16 @@ export const getUserInsights = async (req, res) => {
 
     const ai = latestPredict.predicted_symptoms;
 
-    // ---- Correlation Insight (AI-driven) ----
     const correlationInsight = ai.likely_symptoms?.length
       ? `Recurring patterns detected involving ${ai.likely_symptoms.join(
         ", "
       )}.`
       : null;
-
-    // ---- Predictive Insight (AI-driven) ----
     const predictiveInsight = `
 Risk level: ${ai.risk_level?.toUpperCase() || "UNKNOWN"}.
 
 ${ai.movement_tip || ""}
     `.trim();
-
-    // ---- Nutrition & Recipe (FULLY AI) ----
     const nutritionInsights = ai.nutrition
       ? {
         radar: ai.nutrition.radar || [],
@@ -240,12 +234,22 @@ ${ai.movement_tip || ""}
       }
       : null;
 
+  const movementInsights = ai.movement
+    ? {
+        tonight: ai.movement.tonight || null,
+        routine: ai.movement.routine || null,
+        coupleMode: ai.movement.couple_mode || null,
+      }
+    : null;
+
+
     return res.json({
       success: true,
       insights: {
         correlationInsight,
         predictiveInsight,
         nutritionInsights,
+        movementInsights,
         partnerSummary: ai.partner_summary || null,
       },
     });
