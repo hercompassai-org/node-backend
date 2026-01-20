@@ -101,6 +101,17 @@ Based on menopause patterns, return JSON exactly in this format:
     }
   },
 
+  "mens_support": {
+  "recommended_module": {
+    "title": "Empathy 101",
+    "duration": "5 min",
+    "description": "Short lesson helping partners understand emotional needs and communicate calmly"
+  },
+  "why_recommended": "Explain briefly why this module helps given current symptoms and mood trends",
+  "digest_note": "Short weekly summary safe to share with partner"
+},
+
+
   "partner_summary": "Supportive sentence safe to share with partner (no symptoms mentioned)"
 }
 `;

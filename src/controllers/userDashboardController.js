@@ -242,7 +242,13 @@ ${ai.movement_tip || ""}
       }
     : null;
 
-
+  const mensSupportInsights = ai.mens_support
+    ? {
+        recommendedModule: ai.mens_support.recommended_module || null,
+        whyRecommended: ai.mens_support.why_recommended || "",
+        digestNote: ai.mens_support.digest_note || "",
+      }
+    : null;
     return res.json({
       success: true,
       insights: {
@@ -250,6 +256,7 @@ ${ai.movement_tip || ""}
         predictiveInsight,
         nutritionInsights,
         movementInsights,
+        mensSupportInsights,
         partnerSummary: ai.partner_summary || null,
       },
     });
