@@ -89,7 +89,8 @@ Do NOT reuse example text verbatim unless it is the best possible recommendation
     "suggested_recipe": {
       "title": "Recipe name",
       "benefit": "How this recipe helps current symptoms"
-    }
+    },
+    "image_prompt": "Soft natural light, warm bowl of lentils, leafy greens, chamomile tea, calming evening mood, flat lay, modern health photography"
   },
 
    "movement": {
