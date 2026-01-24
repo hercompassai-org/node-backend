@@ -592,12 +592,13 @@ export const forgotPassword = async (req, res) => {
       message: "Password reset link sent to your email",
     });
   } catch (err) {
-    console.error(err);
-    res.json({
+    console.error("EMAIL ERROR:", err);
+    res.status(500).json({
       success: false,
-      message: "Email service failed",
+      message: err.message,
     });
   }
+
 };
 
 
@@ -625,7 +626,7 @@ export const resetPassword = async (req, res) => {
     });
   }
 };
- 
+
 
 
 
