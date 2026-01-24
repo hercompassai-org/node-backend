@@ -569,7 +569,7 @@ export const forgotPassword = async (req, res) => {
 
     const resetToken = jwt.sign(
       { id: user._id },
-      process.env.JWT_SECRET,
+      process.env.JWT_SECRET || "supersecretkey999",
       { expiresIn: "15m" }
     );
 
@@ -598,21 +598,20 @@ export const forgotPassword = async (req, res) => {
       message: err.message,
     });
   }
-
 };
-
 
 export const resetPassword = async (req, res) => {
   try {
     const { token } = req.params;
     const { password } = req.body;
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-
-    const hashedPassword = await bcrypt.hash(password, 10);
+    const decoded = jwt.verify(
+      token,
+      process.env.JWT_SECRET || "supersecretkey999"
+    );
 
     await User.findByIdAndUpdate(decoded.id, {
-      password: hashedPassword,
+      password: password, // stored as plain text (as requested)
     });
 
     res.json({
@@ -626,6 +625,7 @@ export const resetPassword = async (req, res) => {
     });
   }
 };
+
 
 
 
