@@ -12,6 +12,8 @@ import {
   registerWithOnboarding,
   exportUsers,
   exportAnonymizedReport,
+  forgotPassword,
+  resetPassword
 } from "../controllers/userController.js";
 import { getUserMetrics } from "../controllers/metricsController.js";
 
@@ -26,6 +28,9 @@ router.get("/find/:id", getUserById);
 router.get("/regulars", getNormalUsersAndPartners);
 router.get("/admins", getAdminsAndOthers);
 router.post("/login", loginUser);
+router.post("/forgot-password", forgotPassword);
+router.post("/reset-password/:token", resetPassword);
+
 router.get("/logout", logoutUser);
 router.post("/add", createUser);
 router.post("/update/:id", updateUser);

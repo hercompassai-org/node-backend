@@ -8,6 +8,9 @@ import { Parser } from "json2csv";
 import PDFDocument from "pdfkit";
 import jwt from "jsonwebtoken";
 import { createPartnerInvite } from './partnerController.js';
+import nodemailer from "nodemailer";
+import bcrypt from "bcryptjs";
+import { transporter } from "../utils/mailTransporter.js";
 
 
 
@@ -551,5 +554,78 @@ export const exportAnonymizedReport = async (req, res) => {
     res.status(500).send("Failed to generate anonymized report");
   }
 };
+
+export const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.json({
+        success: false,
+        message: "No account found with this email",
+      });
+    }
+
+    const resetToken = jwt.sign(
+      { id: user._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "15m" }
+    );
+
+    const resetLink = `${process.env.APP_URL}/reset-password/${resetToken}`;
+
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Reset your password",
+      html: `
+        <h3>Password Reset</h3>
+        <p>Click the link below to reset your password.</p>
+        <a href="${resetLink}">${resetLink}</a>
+        <p>This link expires in 15 minutes.</p>
+      `,
+    });
+
+    res.json({
+      success: true,
+      message: "Password reset link sent to your email",
+    });
+  } catch (err) {
+    console.error(err);
+    res.json({
+      success: false,
+      message: "Email service failed",
+    });
+  }
+};
+
+
+export const resetPassword = async (req, res) => {
+  try {
+    const { token } = req.params;
+    const { password } = req.body;
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    await User.findByIdAndUpdate(decoded.id, {
+      password: hashedPassword,
+    });
+
+    res.json({
+      success: true,
+      message: "Password updated successfully",
+    });
+  } catch (err) {
+    res.json({
+      success: false,
+      message: "Invalid or expired reset link",
+    });
+  }
+};
+ 
+
 
 
