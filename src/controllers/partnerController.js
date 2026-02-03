@@ -1,18 +1,16 @@
 import crypto from 'crypto';
 import PartnerInvite from '../models/PartnerInvite.js';
 import User from '../models/User.js';
-import { transporter } from "../utils/mailTransporter.js";
+
+import sgMail from "../config/sendgrid.js";
+
 import PartnerShare from "../models/PartnerShare.js";
 
 
 
 export const createPartnerInvite = async (inviter_id, partner_email) => {
 
-        console.log("📧 createPartnerInvite triggered");
 
-    console.log("EMAIL_USER:", process.env.EMAIL_USER);
-    console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
-    console.log("APP_URL:", process.env.APP_URL);
    
     const token = crypto.randomBytes(24).toString("hex");
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
@@ -36,12 +34,13 @@ export const createPartnerInvite = async (inviter_id, partner_email) => {
         `;
         console.log("📨 Sending email to:", partner_email);
 
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
+        await sgMail.send({
             to: partner_email,
+            from: "noreply@hercompassai.com", // Must be verified in SendGrid
             subject: "HerCompass Partner Invitation",
             html,
         });
+
 
     } catch (err) {
         console.error("❌ Invite email failed:", err.message);
