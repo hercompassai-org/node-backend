@@ -290,6 +290,7 @@ export const createUser = async (req, res) => {
 
 
 export const registerWithOnboarding = async (req, res) => {
+   
   try {
     const {
       full_name,
@@ -360,7 +361,7 @@ export const registerWithOnboarding = async (req, res) => {
 
       role: "user",
     });
-
+ 
     if (partner_email && partner_consent) {
       try {
         await createPartnerInvite(newUser.id, partner_email);
@@ -370,7 +371,7 @@ export const registerWithOnboarding = async (req, res) => {
     }
     return res.status(201).json({
       success: true,
-      message: "User registered with full onboarding successfully",
+      message: "User registered with full onboarding successfull",
       user: newUser,
     });
 

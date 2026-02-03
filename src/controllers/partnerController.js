@@ -7,6 +7,13 @@ import PartnerShare from "../models/PartnerShare.js";
 
 
 export const createPartnerInvite = async (inviter_id, partner_email) => {
+
+        console.log("📧 createPartnerInvite triggered");
+
+    console.log("EMAIL_USER:", process.env.EMAIL_USER);
+    console.log("EMAIL_PASS exists:", !!process.env.EMAIL_PASS);
+    console.log("APP_URL:", process.env.APP_URL);
+   
     const token = crypto.randomBytes(24).toString("hex");
     const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
@@ -27,6 +34,7 @@ export const createPartnerInvite = async (inviter_id, partner_email) => {
             <p>If the button does not work, copy this link:</p>
             <p>${acceptUrl}</p>
         `;
+        console.log("📨 Sending email to:", partner_email);
 
         await transporter.sendMail({
             from: process.env.EMAIL_USER,
