@@ -38,8 +38,12 @@ export const createPartnerInvite = async (inviter_id, partner_email) => {
 
 
     } catch (err) {
-        console.error("❌ Invite email failed:", err.message);
+        console.error(
+            "❌ SENDGRID ERROR:",
+            err.response?.body || err.message
+        );
     }
+
 
     return invite;
 };
