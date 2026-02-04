@@ -26,7 +26,8 @@ const __dirname = path.dirname(__filename);
 
 const allowedOrigins = [
   "http://localhost:3000",
-  "https://www.hercompassai.com"
+  "https://www.hercompassai.com",
+  "https://next-userend.vercel.app"
 ];
 
 app.use(
